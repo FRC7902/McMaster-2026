@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Optional;
@@ -46,7 +47,8 @@ public class FlywheelSubsystem extends SubsystemBase {
 
     private final FlyWheel m_flywheel;
 
-    private final Debouncer m_atRPMDebouncer = new Debouncer(FlywheelConstants.AT_RPM_DEBOUNCE_TIME,
+    private final Debouncer m_atRPMDebouncer = new Debouncer(
+            FlywheelConstants.AT_RPM_DEBOUNCE_TIME.in(Seconds),
             Debouncer.DebounceType.kRising);
 
     public FlywheelSubsystem() {
@@ -70,13 +72,15 @@ public class FlywheelSubsystem extends SubsystemBase {
                 .withIdleMode(MotorMode.COAST) // Keep spinning even if not powered
                 .withTelemetry("FlywheelMotor", Constants.TELEMETRY_VERBOSITY)
                 .withStatorCurrentLimit(FlywheelConstants.STATOR_CURRENT_LIMIT_AMPS)
-                .withMotorInverted(false)
+                .withMotorInverted(FlywheelConstants.LEADER_MOTOR_INVERTED)
                 .withClosedLoopRampRate(FlywheelConstants.CLOSED_LOOP_RAMP_RATE_SEC)
                 .withOpenLoopRampRate(FlywheelConstants.OPEN_LOOP_RAMP_RATE_SEC)
-                .withFeedforward(FlywheelConstants.FEEDFORWARD)
-                .withSimFeedforward(FlywheelConstants.SIM_FEEDFORWARD)
+                // TODO: Is feedfoward necessary?
+                // .withFeedforward(FlywheelConstants.FEEDFORWARD)
+                // .withSimFeedforward(FlywheelConstants.SIM_FEEDFORWARD)
                 .withControlMode(ControlMode.CLOSED_LOOP)
-                .withFollowers(Pair.of(m_followerMotor, true));
+                .withFollowers(Pair.of(m_followerMotor, FlywheelConstants.FOLLOWER_MOTOR_INVERTED))
+                .withMomentOfInertia(FlywheelConstants.MOI);
 
         m_smartMotorController = new TalonFXWrapper(
                 m_leaderMotor,
@@ -90,12 +94,11 @@ public class FlywheelSubsystem extends SubsystemBase {
 
         FlyWheelConfig m_flywheelConfig = new FlyWheelConfig(m_smartMotorController)
                 .withDiameter(FlywheelConstants.DIAMETER_INCHES)
-                .withMass(FlywheelConstants.MASS_POUNDS)
+                .withMOI(FlywheelConstants.MOI)
                 .withTelemetry("FlywheelMech", Constants.TELEMETRY_VERBOSITY)
-                .withSoftLimit(RPM.of(-FlywheelConstants.SOFT_LIMIT_RPM), RPM.of(FlywheelConstants.SOFT_LIMIT_RPM))
+                .withSoftLimit(FlywheelConstants.SOFT_LIMIT_RPM.times(-1), FlywheelConstants.SOFT_LIMIT_RPM)
                 .withSpeedometerSimulation(FlywheelConstants.SIM_MAX_VELOCITY_RPM)
                 .withMechanismPositionConfig(m_robotToMechanism);
-        // TODO: Add MOI?
 
         m_flywheel = new FlyWheel(m_flywheelConfig);
     }
@@ -180,7 +183,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * @return a Command that starts the flywheel at the shooting RPM when executed
      */
     public Command shoot() {
-        return setVelocity(FlywheelConstants.SHOOTING_VELOCITY);
+        return setVelocity(FlywheelConstants.ALLIANCE_SHOOTING_VELOCITY);
     }
 
     /**

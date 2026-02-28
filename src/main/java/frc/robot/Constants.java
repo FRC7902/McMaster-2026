@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Inch;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
@@ -33,6 +34,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
+import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -150,16 +152,19 @@ public final class Constants {
     }
 
     public static final class FlywheelConstants {
-        public static final int LEADER_MOTOR_CAN_ID = 18; // TODO
-        public static final int FOLLOWER_MOTOR_CAN_ID = 20; // TODO
+        public static final int LEADER_MOTOR_CAN_ID = 20;
+        public static final int FOLLOWER_MOTOR_CAN_ID = 21;
 
         public static final DCMotor MOTOR = DCMotor.getKrakenX60Foc(2);
-        public static final GearBox GEARBOX = GearBox.fromReductionStages(0.5); // TODO
+        public static final GearBox GEARBOX = GearBox.fromStages("1:2");
 
-        public static final Distance DIAMETER_INCHES = Inches.of(3); // TODO
-        public static final Mass MASS_POUNDS = Pounds.of(4); // TODO
+        public static final boolean LEADER_MOTOR_INVERTED = false; // TODO
+        public static final boolean FOLLOWER_MOTOR_INVERTED = true;
 
-        public static final Current STATOR_CURRENT_LIMIT_AMPS = Amps.of(40); // TODO
+        public static final Distance DIAMETER_INCHES = Inches.of(3);
+        public static final MomentOfInertia MOI = KilogramSquareMeters.of(0.0006438072);
+
+        public static final Current STATOR_CURRENT_LIMIT_AMPS = Amps.of(50);
 
         public static final double PID_kP = 1; // TODO
         public static final double PID_kI = 0.0; // TODO
@@ -169,25 +174,29 @@ public final class Constants {
         public static final double SIM_PID_kI = 0.0; // TODO
         public static final double SIM_PID_kD = 0.0; // TODO
 
-        public static final SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(0.27937, 0.089836,
-                0.014557); // TODO
-        public static final SimpleMotorFeedforward SIM_FEEDFORWARD = new SimpleMotorFeedforward(0.27937, 0.089836,
-                0.014557); // TODO
+        // public static final SimpleMotorFeedforward FEEDFORWARD = new
+        // SimpleMotorFeedforward(0.27937, 0.089836,
+        // 0.014557); // TODO
+        // public static final SimpleMotorFeedforward SIM_FEEDFORWARD = new
+        // SimpleMotorFeedforward(0.27937, 0.089836,
+        // 0.014557); // TODO
 
-        public static final Time CLOSED_LOOP_RAMP_RATE_SEC = Seconds.of(0.25); // TODO
-        public static final Time OPEN_LOOP_RAMP_RATE_SEC = Seconds.of(0.25); // TODO
+        public static final Time CLOSED_LOOP_RAMP_RATE_SEC = Seconds.of(0.25);
+        public static final Time OPEN_LOOP_RAMP_RATE_SEC = Seconds.of(0.25);
 
-        public static final AngularVelocity MAX_VELOCITY_RPM = RPM.of(12000);
-        public static final AngularVelocity SIM_MAX_VELOCITY_RPM = RPM.of(12000);
-        public static final AngularAcceleration MAX_ACCELERATION_RPS2 = RotationsPerSecondPerSecond.of(2500); // TODO
+        public static final AngularVelocity MAX_VELOCITY_RPM = RPM.of(11568);
+        public static final AngularVelocity SIM_MAX_VELOCITY_RPM = RPM.of(11568);
+        public static final AngularAcceleration MAX_ACCELERATION_RPS2 = RotationsPerSecondPerSecond.of(173);
 
-        public static final double SOFT_LIMIT_RPM = 9000; // TODO
+        public static final AngularVelocity SOFT_LIMIT_RPM = RPM.of(11568); // TODO
 
-        public static final AngularVelocity SHOOTING_VELOCITY = RPM.of(2330); // TODO
-        public static final AngularVelocity DEFAULT_VELOCITY = RPM.of(SHOOTING_VELOCITY.times(0.8).in(RPM)); // TODO
+        public static final AngularVelocity ALLIANCE_SHOOTING_VELOCITY = RPM.of(2216);
+        public static final AngularVelocity NEUTRAL_SHOOTING_VELOCITY = RPM.of(2674);
+        public static final AngularVelocity OPPONENT_SHOOTING_VELOCITY = RPM.of(2900);
+        public static final AngularVelocity DEFAULT_VELOCITY = ALLIANCE_SHOOTING_VELOCITY; // TODO
 
-        public static final AngularVelocity RPM_TARGET_ERROR = RPM.of(150); // TODO
-        public static final double AT_RPM_DEBOUNCE_TIME = 0.2; // TODO
+        public static final AngularVelocity RPM_TARGET_ERROR = RPM.of(50); // ~2% of ALLIANCE_SHOOTING_VELOCITY
+        public static final Time AT_RPM_DEBOUNCE_TIME = Seconds.of(0.2); // TODO
 
         public static final Translation3d RELATIVE_POSITION = new Translation3d(Inches.of(-5.087),
                 Inches.of(0),
