@@ -69,7 +69,7 @@ public class FlywheelSubsystem extends SubsystemBase {
                         FlywheelConstants.MAX_VELOCITY_RPM,
                         FlywheelConstants.MAX_ACCELERATION_RPS2)
                 .withGearing(new MechanismGearing(FlywheelConstants.GEARBOX))
-                .withIdleMode(MotorMode.COAST) // Keep spinning even if not powered
+                .withIdleMode(FlywheelConstants.IDLE_MODE) // Keep spinning even if not powered
                 .withTelemetry("FlywheelMotor", Constants.TELEMETRY_VERBOSITY)
                 .withStatorCurrentLimit(FlywheelConstants.STATOR_CURRENT_LIMIT_AMPS)
                 .withMotorInverted(FlywheelConstants.LEADER_MOTOR_INVERTED)
@@ -109,7 +109,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      */
     public Command sysId() {
         return m_flywheel.sysId(
-                Volts.of(10), Volts.of(1).per(Second), Second.of(5))
+                Volts.of(10), Volts.of(1).per(Second), Second.of(20))
                 .beforeStarting(
                         () -> SignalLogger.start())
                 .finallyDo(() -> SignalLogger.stop());

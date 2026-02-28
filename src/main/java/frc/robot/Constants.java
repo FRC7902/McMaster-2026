@@ -41,6 +41,7 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import yams.gearing.GearBox;
 import yams.gearing.MechanismGearing;
 import yams.motorcontrollers.SmartMotorControllerConfig;
+import yams.motorcontrollers.SmartMotorControllerConfig.MotorMode;
 
 public final class Constants {
 
@@ -158,6 +159,8 @@ public final class Constants {
 
         public static final DCMotor MOTOR = DCMotor.getKrakenX60Foc(2);
         public static final GearBox GEARBOX = GearBox.fromStages("1:2");
+
+        public static final MotorMode IDLE_MODE = MotorMode.COAST;
 
         public static final boolean LEADER_MOTOR_INVERTED = false; // TODO
         public static final boolean FOLLOWER_MOTOR_INVERTED = true;
