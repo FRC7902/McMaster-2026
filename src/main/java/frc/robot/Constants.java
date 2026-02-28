@@ -110,7 +110,7 @@ public final class Constants {
         }
 
         public static class LinearIntakeConstants {
-            public static final int MOTOR_CAN_ID = 2;
+            public static final int MOTOR_CAN_ID = 18;
             public static final DCMotor MOTOR = DCMotor.getKrakenX60Foc(1);
 
             public static final Distance MOTOR_CIRCUMFERENCE = Inches.of(0.8).times(Math.PI);
