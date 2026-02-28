@@ -54,8 +54,7 @@ public class RobotContainer {
     private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
             "swerve"));
 
-    private final SimSubsystem m_simSubsystem = new SimSubsystem(
-            m_swerveSubsystem.getSwerveDrive().getMapleSimDrive().get());
+    private final SimSubsystem m_simSubsystem;
 
     // Choreo
     private final AutoFactory autoFactory = new AutoFactory(
@@ -145,6 +144,10 @@ public class RobotContainer {
     public RobotContainer() {
         if (Robot.isSimulation()) {
             DriverStation.silenceJoystickConnectionWarning(true);
+            m_simSubsystem = new SimSubsystem(
+                    m_swerveSubsystem.getSwerveDrive().getMapleSimDrive().get());
+        } else {
+            m_simSubsystem = null;
         }
 
         autoChooser = new AutoChooser();
