@@ -97,7 +97,8 @@ public final class Constants {
         public static final int MOTOR_STATOR_CURRENT_LIMIT = -1; // TODO
         public static final int MOTOR_SUPPLY_CURRENT_LIMIT = -1; // TODO
 
-        public static final double INDEXER_SPEED = 0.5; // TODO
+        public static final double INDEXER_FULL_SPEED = 1; // TODO
+        public static final double INDEXER_HALF_SPEED = 0.1; // TODO
     }
 
     public static class IntakeConstants {
