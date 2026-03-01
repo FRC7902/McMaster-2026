@@ -66,20 +66,22 @@ public class ShooterSubsystem extends SubsystemBase {
         return Commands.parallel(
                 m_hoodSubsystem.setAngle(
                         () -> m_hoodSubsystem.getAngleToTarget(getDistanceToTarget.get())),
-                m_flywheelSubsystem.shoot().andThen(
-                        new ConditionalCommand(m_feederSubsystem.feed(), m_feederSubsystem.stop(),
-                                () -> isAutoAimReady.get() && isShooterReady()).repeatedly())) // TODO: Find a way to
-                                                                                               // remove the
-                                                                                               // repeatedly(), and
-                                                                                               // instead only
-                                                                                               // switch between feed
-                                                                                               // and stop
-                                                                                               // once the shooter is
-                                                                                               // ready/not
-                                                                                               // ready, instead of
-                                                                                               // constantly
-                                                                                               // running feed/stop
-                                                                                               // commands
+                m_flywheelSubsystem.shoot(),
+                new ConditionalCommand(
+                        m_feederSubsystem.feed(),
+                        m_feederSubsystem.stop(),
+                        () -> isAutoAimReady.get() && isShooterReady()).repeatedly()) // TODO: Find a way to
+                                                                                      // remove the
+                                                                                      // repeatedly(), and
+                                                                                      // instead only
+                                                                                      // switch between feed
+                                                                                      // and stop
+                                                                                      // once the shooter is
+                                                                                      // ready/not
+                                                                                      // ready, instead of
+                                                                                      // constantly
+                                                                                      // running feed/stop
+                                                                                      // commands
                 .withName("SHTR - Aim and Shoot");
     }
     // TODO: What if we get pushed while we're auto-aiming? This may 'cause
