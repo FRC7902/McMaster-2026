@@ -93,7 +93,7 @@ public final class Constants {
     }
 
     public static class IndexerConstants {
-        public static final int MOTOR_CAN_ID = 1; // TODO
+        public static final int MOTOR_CAN_ID = 19;
 
         public static final int MOTOR_STATOR_CURRENT_LIMIT = -1; // TODO
         public static final int MOTOR_SUPPLY_CURRENT_LIMIT = -1; // TODO
