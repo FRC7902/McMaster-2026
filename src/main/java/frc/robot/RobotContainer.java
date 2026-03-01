@@ -37,6 +37,8 @@ import frc.robot.subsystems.SwerveSubsystem.Zone;
 import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.subsystems.intake.LinearIntakeSubsystem;
 import frc.robot.subsystems.intake.LinearIntakeSubsystem.LinearIntakePosition;
+import limelight.Limelight;
+import limelight.networktables.LimelightSettings.ImuMode;
 import swervelib.SwerveInputStream;
 import swervelib.simulation.ironmaple.simulation.SimulatedArena;
 import swervelib.simulation.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnField;
@@ -54,6 +56,9 @@ public class RobotContainer {
             "swerve"));
 
     private final SimSubsystem m_simSubsystem;
+
+    private final Limelight limelightA;
+    private final Limelight limelightC;
 
     // Choreo
     private final AutoFactory autoFactory = new AutoFactory(
@@ -153,6 +158,11 @@ public class RobotContainer {
         // autoChooser.addRoutine("routine1", this::routine1);
         SmartDashboard.putData("Auto Chooser", autoChooser);
         RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+
+        limelightA = new Limelight("limelight-a");
+
+        // Only do this for LL4, so we use heading readings from MT1 from 3G?
+        limelightA.getSettings().withImuMode(ImuMode.ExternalImu).save();
 
         configureBindings();
     }
@@ -394,5 +404,10 @@ public class RobotContainer {
      */
     public Command startFlywheelDefaultRPM() {
         return m_shooterSubsystem.startFlywheelDefaultRPM();
+    }
+
+    public void updateLocalization() {
+        m_swerveSubsystem.updateLocalization(limelightA, true);
+        m_swerveSubsystem.updateLocalization(limelightC, false);
     }
 }

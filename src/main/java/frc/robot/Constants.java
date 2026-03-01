@@ -18,12 +18,16 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Map;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -419,8 +423,21 @@ public final class Constants {
         public static final Distance ROBOT_MAX_LENGTH = Inches.of(27);
     }
 
-    // Consider setting to LOW or MEDIUM for competition to reduce network traffic
+    public static final class VisionConstants {
+        // MT1 is configured to be effectively ignored for X/Y position (very large
+        // stddev) while still being trusted for rotation. The 1e6 X/Y values indicate
+        // extremely high uncertainty in translation so pose estimators will down‑weight
+        // MT1's position contribution, but the relatively small rotational stddev (~3
+        // degrees) allows MT1 to meaningfully contribute to heading estimation.
+        public static final Matrix<N3, N1> MT1_STDDEV = VecBuilder.fill(1e6, 1e6, Math.PI / 60);
+        // MT2 is the complementary measurement source: it is trusted for X/Y
+        // translation (small stddevs) and effectively ignored for rotation (very large
+        // stddev). Together, these settings implement "use only x/y from MT2" and "use
+        // only rotation from MT1" when fusing measurements.
+        public static final Matrix<N3, N1> MT2_STDDEV = VecBuilder.fill(0.5, 0.5, 1e6);
+    }
 
+    // Consider setting to LOW or MEDIUM for competition to reduce network traffic
     // Set the telemetry verbosity for YAMS subsystems
     public static final SmartMotorControllerConfig.TelemetryVerbosity TELEMETRY_VERBOSITY = SmartMotorControllerConfig.TelemetryVerbosity.HIGH; // TODO:
 
