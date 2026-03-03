@@ -284,11 +284,45 @@ public final class Constants {
         public static final int MOTOR_CAN_ID = 23;
         public static final int BEAM_BREAK_DIO_PORT = 0; // TODO
 
-        public static final int MOTOR_STATOR_CURRENT_LIMIT = 60; // TODO
-        public static final int MOTOR_SUPPLY_CURRENT_LIMIT = 70; // TODO
-
         public static final double FEEDER_SPEED = 0.5; // TODO
         public static final double REVERSE_SPEED = 0.5; // TODO
+
+        public static final DCMotor MOTOR = DCMotor.getKrakenX60Foc(1);
+        public static final GearBox GEARBOX = GearBox.fromStages("24:18");
+
+        public static final MotorMode IDLE_MODE = MotorMode.BRAKE;
+
+        public static final boolean LEADER_MOTOR_INVERTED = false; // TODO
+        public static final boolean FOLLOWER_MOTOR_INVERTED = true;
+
+        public static final Distance DIAMETER_INCHES = Inches.of(3);
+        public static final MomentOfInertia MOI = KilogramSquareMeters.of(
+                0.0009446408);
+
+        public static final Current STATOR_CURRENT_LIMIT_AMPS = Amps.of(60);
+        public static final Current SUPPLY_CURRENT_LIMIT_AMPS = Amps.of(70);
+
+        public static final double PID_kP = 0.0; // TODO
+        public static final double PID_kI = 0.0; // TODO
+        public static final double PID_kD = 0.0; // TODO
+
+        public static final double SIM_PID_kP = 0.075; // TODO
+        public static final double SIM_PID_kI = 0.0; // TODO
+        public static final double SIM_PID_kD = 0.0; // TODO
+
+        public static final SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(0.0, 0.0,
+                0.0);
+        public static final SimpleMotorFeedforward SIM_FEEDFORWARD = new SimpleMotorFeedforward(2.25,
+                0.0, 0.0); // TODO
+
+        public static final Time CLOSED_LOOP_RAMP_RATE_SEC = Seconds.of(0.25);
+        public static final Time OPEN_LOOP_RAMP_RATE_SEC = Seconds.of(0.25);
+
+        public static final AngularVelocity MAX_VELOCITY_RPM = RPM.of(4338);
+        public static final AngularVelocity SIM_MAX_VELOCITY_RPM = RPM.of(4338);
+        public static final AngularAcceleration MAX_ACCELERATION_RPS2 = RotationsPerSecondPerSecond.of(99999); // TODO
+
+        public static final AngularVelocity SOFT_LIMIT_RPM = RPM.of(4338);
     }
 
     public static final class HopperConstants {

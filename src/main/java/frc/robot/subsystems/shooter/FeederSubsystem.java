@@ -4,19 +4,43 @@
 
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import static edu.wpi.first.units.Units.FeetPerSecond;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.FeederConstants;
+import yams.gearing.MechanismGearing;
+import yams.mechanisms.config.FlyWheelConfig;
+import yams.mechanisms.velocity.FlyWheel;
+import yams.motorcontrollers.SmartMotorController;
+import yams.motorcontrollers.SmartMotorControllerConfig;
+import yams.motorcontrollers.SmartMotorControllerConfig.ControlMode;
+import yams.motorcontrollers.remote.TalonFXWrapper;
 
 public class FeederSubsystem extends SubsystemBase {
 
     private final TalonFX m_motor;
+
+    private final SmartMotorController m_smartMotorController;
+
+    private final FlyWheel m_feeder;
 
     private final DigitalInput m_beamBreak;
 
@@ -24,61 +48,130 @@ public class FeederSubsystem extends SubsystemBase {
         m_motor = new TalonFX(FeederConstants.MOTOR_CAN_ID);
         m_beamBreak = new DigitalInput(FeederConstants.BEAM_BREAK_DIO_PORT);
 
-        TalonFXConfiguration m_motorConfig = new TalonFXConfiguration();
-        MotorOutputConfigs m_motorOutputConfig = new MotorOutputConfigs();
+        SmartMotorControllerConfig smcConfig = new SmartMotorControllerConfig(this)
+                .withClosedLoopController(
+                        FeederConstants.PID_kP,
+                        FeederConstants.PID_kI,
+                        FeederConstants.PID_kD,
+                        FeederConstants.MAX_VELOCITY_RPM,
+                        FeederConstants.MAX_ACCELERATION_RPS2)
+                .withSimClosedLoopController(
+                        FeederConstants.SIM_PID_kP,
+                        FeederConstants.SIM_PID_kI,
+                        FeederConstants.SIM_PID_kD,
+                        FeederConstants.MAX_VELOCITY_RPM,
+                        FeederConstants.MAX_ACCELERATION_RPS2)
+                .withGearing(new MechanismGearing(FeederConstants.GEARBOX))
+                .withIdleMode(FeederConstants.IDLE_MODE) // Keep spinning even if not powered
+                .withTelemetry("FlywheelMotor", Constants.TELEMETRY_VERBOSITY)
+                .withStatorCurrentLimit(FeederConstants.STATOR_CURRENT_LIMIT_AMPS)
+                .withMotorInverted(FeederConstants.LEADER_MOTOR_INVERTED)
+                .withClosedLoopRampRate(FeederConstants.CLOSED_LOOP_RAMP_RATE_SEC)
+                .withOpenLoopRampRate(FeederConstants.OPEN_LOOP_RAMP_RATE_SEC)
+                .withFeedforward(FeederConstants.FEEDFORWARD)
+                .withSimFeedforward(FeederConstants.SIM_FEEDFORWARD)
+                .withControlMode(ControlMode.CLOSED_LOOP)
+                .withMomentOfInertia(FeederConstants.MOI);
 
-        // Configure current limits for motor protection.
-        m_motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        m_motorConfig.CurrentLimits.StatorCurrentLimit = FeederConstants.MOTOR_STATOR_CURRENT_LIMIT;
-        m_motorConfig.CurrentLimits.SupplyCurrentLimit = FeederConstants.MOTOR_SUPPLY_CURRENT_LIMIT;
+        m_smartMotorController = new TalonFXWrapper(
+                m_motor,
+                FeederConstants.MOTOR,
+                smcConfig);
 
-        // Set motor neutral behavior.
-        m_motorOutputConfig.withNeutralMode(NeutralModeValue.Brake);
-        m_motorConfig.withMotorOutput(m_motorOutputConfig);
+        FlyWheelConfig feederConfig = new FlyWheelConfig(m_smartMotorController)
+                .withDiameter(FeederConstants.DIAMETER_INCHES)
+                .withMOI(FeederConstants.MOI)
+                .withTelemetry("FlywheelMech", Constants.TELEMETRY_VERBOSITY)
+                .withSoftLimit(FeederConstants.SOFT_LIMIT_RPM.times(-1), FeederConstants.SOFT_LIMIT_RPM)
+                .withSpeedometerSimulation(FeederConstants.SIM_MAX_VELOCITY_RPM);
 
-        // Apply configuration to the motor controller.
-        m_motor.getConfigurator().apply(m_motorConfig);
+        m_feeder = new FlyWheel(feederConfig);
     }
 
     /**
-     * Sets the intake motor speed.
+     * Creates a SysId characterization command for the flywheel.
      *
-     * @param speed the desired motor output (-1.0 to 1.0)
+     * @return the SysId command
      */
-    public void setSpeed(double speed) {
-        m_motor.set(speed);
+    public Command sysId() {
+        return m_feeder.sysId(
+                Volts.of(10), Volts.of(1).per(Second), Second.of(20))
+                .beforeStarting(
+                        () -> SignalLogger.start())
+                .finallyDo(() -> SignalLogger.stop());
     }
 
     /**
-     * Stops the intake motor.
-     * 
-     * @return a Command that stops the feeder when executed
+     * Gets the current flywheel velocity.
+     *
+     * @return the current angular velocity
      */
+    public AngularVelocity getAngularVelocity() {
+        return m_feeder.getSpeed();
+    }
+
+    /**
+     * Gets the current flywheel velocity.
+     * 
+     * @return the current linear velocity
+     */
+    public LinearVelocity getLinearVelocity() {
+        return m_feeder.getLinearVelocity();
+    }
+
+    /**
+     * Creates a command to set the flywheel velocity.
+     *
+     * @param speed the target angular velocity
+     * @return the command that sets flywheel speed
+     */
+    public Command setSpeed(AngularVelocity speed) {
+        return m_feeder.setSpeed(speed);
+    }
+
+    /**
+     * Creates a command to set the flywheel velocity from a supplier.
+     *
+     * @param speed the supplier of target angular velocity
+     * @return the command that sets flywheel speed
+     */
+    public Command setSpeed(Supplier<AngularVelocity> speed) {
+        return m_feeder.setSpeed(speed);
+    }
+
+    /**
+     * Creates a command to set the flywheel speed based on linear velocity.
+     *
+     * @param speed the desired linear velocity
+     * @return the command that sets flywheel speed
+     */
+    public Command setSpeed(LinearVelocity speed) {
+        return m_feeder.setSpeed(RotationsPerSecond
+                .of(speed.in(MetersPerSecond) / FeederConstants.DIAMETER_INCHES.times(Math.PI).in(Meters)));
+    }
+
+    public Optional<AngularVelocity> getSetpointVelocity() {
+        Optional<AngularVelocity> setpoint = m_smartMotorController.getMechanismSetpointVelocity();
+
+        if (!setpoint.isPresent())
+            return Optional.empty();
+
+        // Convert from output to input velocity for comparison with actual velocity
+        return Optional.of(setpoint.get().times(FeederConstants.GEARBOX.getInputToOutputConversionFactor()));
+    }
+
+    public Command feed() {
+        return this.runOnce(() -> m_feeder.set(FeederConstants.FEEDER_SPEED));
+    }
+
+    public Command reverse() {
+        return this.runOnce(() -> m_feeder.set(FeederConstants.REVERSE_SPEED));
+    }
+
     public Command stop() {
         return this.runOnce(() -> {
-            m_motor.stopMotor();
-        });
-    }
-
-    /**
-     * Runs the feeder at the predefined speed.
-     *
-     * @return a Command that runs the feeder when executed
-     */
-    public Command feed() {
-        return this.runOnce(() -> {
-            setSpeed(FeederConstants.FEEDER_SPEED);
-        });
-    }
-
-    /**
-     * Runs the feeder in reverse at the predefined reverse speed.
-     * 
-     * @return a Command that runs the feeder in reverse when executed
-     */
-    public Command reverse() {
-        return this.runOnce(() -> {
-            setSpeed(FeederConstants.REVERSE_SPEED);
+            m_smartMotorController.stopClosedLoopController();
+            m_smartMotorController.setDutyCycle(0);
         });
     }
 
@@ -92,7 +185,25 @@ public class FeederSubsystem extends SubsystemBase {
         return m_beamBreak.get();
     }
 
+    /**
+     * Updates flywheel telemetry.
+     */
     @Override
     public void periodic() {
+        m_feeder.updateTelemetry();
+
+        if (Constants.TELEMETRY) {
+            SmartDashboard.putNumber("FeederMech/linearVelocity (fps)", getLinearVelocity().in(FeetPerSecond));
+            SmartDashboard.putNumber("FeederMech/velocity (RPM)", getAngularVelocity().in(RPM));
+            SmartDashboard.putNumber("FeederMech/setpoint (RPM)",
+                    getSetpointVelocity().map(
+                            setpoint -> setpoint.in(RPM) * FeederConstants.GEARBOX.getOutputToInputConversionFactor())
+                            .orElse(Double.NaN));
+        }
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        m_feeder.simIterate();
     }
 }

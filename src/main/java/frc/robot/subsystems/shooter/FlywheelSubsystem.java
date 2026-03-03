@@ -54,7 +54,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         m_leaderMotor = new TalonFX(FlywheelConstants.LEADER_MOTOR_CAN_ID);
         m_followerMotor = new TalonFX(FlywheelConstants.FOLLOWER_MOTOR_CAN_ID);
 
-        SmartMotorControllerConfig m_smcConfig = new SmartMotorControllerConfig(this)
+        SmartMotorControllerConfig smcConfig = new SmartMotorControllerConfig(this)
                 .withClosedLoopController(
                         FlywheelConstants.PID_kP,
                         FlywheelConstants.PID_kI,
@@ -83,22 +83,22 @@ public class FlywheelSubsystem extends SubsystemBase {
         m_smartMotorController = new TalonFXWrapper(
                 m_leaderMotor,
                 FlywheelConstants.MOTOR,
-                m_smcConfig);
+                smcConfig);
 
-        MechanismPositionConfig m_robotToMechanism = new MechanismPositionConfig()
+        MechanismPositionConfig robotToMechanism = new MechanismPositionConfig()
                 .withMaxRobotHeight(MechanismPositionConstants.ROBOT_MAX_HEIGHT)
                 .withMaxRobotLength(MechanismPositionConstants.ROBOT_MAX_LENGTH)
                 .withRelativePosition(FlywheelConstants.RELATIVE_POSITION);
 
-        FlyWheelConfig m_flywheelConfig = new FlyWheelConfig(m_smartMotorController)
+        FlyWheelConfig flywheelConfig = new FlyWheelConfig(m_smartMotorController)
                 .withDiameter(FlywheelConstants.DIAMETER_INCHES)
                 .withMOI(FlywheelConstants.MOI)
                 .withTelemetry("FlywheelMech", Constants.TELEMETRY_VERBOSITY)
                 .withSoftLimit(FlywheelConstants.SOFT_LIMIT_RPM.times(-1), FlywheelConstants.SOFT_LIMIT_RPM)
                 .withSpeedometerSimulation(FlywheelConstants.SIM_MAX_VELOCITY_RPM)
-                .withMechanismPositionConfig(m_robotToMechanism);
+                .withMechanismPositionConfig(robotToMechanism);
 
-        m_flywheel = new FlyWheel(m_flywheelConfig);
+        m_flywheel = new FlyWheel(flywheelConfig);
     }
 
     /**
@@ -119,7 +119,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      *
      * @return the current angular velocity
      */
-    public AngularVelocity getVelocity() {
+    public AngularVelocity getAngularVelocity() {
         return m_flywheel.getSpeed();
     }
 
@@ -138,7 +138,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * @param speed the target angular velocity
      * @return the command that sets flywheel speed
      */
-    public Command setVelocity(AngularVelocity speed) {
+    public Command setSpeed(AngularVelocity speed) {
         return m_flywheel.setSpeed(speed);
     }
 
@@ -148,7 +148,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * @param speed the supplier of target angular velocity
      * @return the command that sets flywheel speed
      */
-    public Command setVelocity(Supplier<AngularVelocity> speed) {
+    public Command setSpeed(Supplier<AngularVelocity> speed) {
         return m_flywheel.setSpeed(speed);
     }
 
@@ -158,18 +158,8 @@ public class FlywheelSubsystem extends SubsystemBase {
      * @param speed the desired linear velocity
      * @return the command that sets flywheel speed
      */
-    public Command setRPM(LinearVelocity speed) {
+    public Command setSpeed(LinearVelocity speed) {
         return m_flywheel.setSpeed(RotationsPerSecond
-                .of(speed.in(MetersPerSecond) / FlywheelConstants.DIAMETER_INCHES.times(Math.PI).in(Meters)));
-    }
-
-    /**
-     * Directly sets flywheel speed based on linear velocity.
-     *
-     * @param speed the desired linear velocity
-     */
-    public void setRPMDirect(LinearVelocity speed) {
-        m_smartMotorController.setVelocity(RotationsPerSecond
                 .of(speed.in(MetersPerSecond) / FlywheelConstants.DIAMETER_INCHES.times(Math.PI).in(Meters)));
     }
 
@@ -181,7 +171,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * @return a Command that starts the flywheel at the shooting RPM when executed
      */
     public Command shoot() {
-        return setVelocity(FlywheelConstants.ALLIANCE_SHOOTING_VELOCITY);
+        return setSpeed(FlywheelConstants.ALLIANCE_SHOOTING_VELOCITY);
     }
 
     /**
@@ -191,7 +181,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      * @return a Command that starts the flywheel at the default RPM when executed
      */
     public Command setDefaultRPM() {
-        return setVelocity(FlywheelConstants.DEFAULT_VELOCITY);
+        return setSpeed(FlywheelConstants.DEFAULT_VELOCITY);
     }
 
     public Optional<AngularVelocity> getSetpointVelocity() {
@@ -211,7 +201,8 @@ public class FlywheelSubsystem extends SubsystemBase {
             return false;
 
         return m_atRPMDebouncer.calculate(
-                setpoint.get().times(FlywheelConstants.GEARBOX.getOutputToInputConversionFactor()).isNear(getVelocity(),
+                setpoint.get().times(FlywheelConstants.GEARBOX.getOutputToInputConversionFactor()).isNear(
+                        getAngularVelocity(),
                         FlywheelConstants.RPM_TARGET_ERROR));
     }
 
@@ -231,7 +222,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
         if (Constants.TELEMETRY) {
             SmartDashboard.putNumber("FlywheelMech/linearVelocity (fps)", getLinearVelocity().in(FeetPerSecond));
-            SmartDashboard.putNumber("FlywheelMech/velocity (RPM)", getVelocity().in(RPM));
+            SmartDashboard.putNumber("FlywheelMech/velocity (RPM)", getAngularVelocity().in(RPM));
             SmartDashboard.putNumber("FlywheelMech/setpoint (RPM)",
                     getSetpointVelocity().map(
                             setpoint -> setpoint.in(RPM) * FlywheelConstants.GEARBOX.getOutputToInputConversionFactor())
