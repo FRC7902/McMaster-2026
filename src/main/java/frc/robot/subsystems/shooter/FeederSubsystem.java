@@ -161,11 +161,11 @@ public class FeederSubsystem extends SubsystemBase {
     }
 
     public Command feed() {
-        return this.runOnce(() -> m_feeder.set(FeederConstants.FEEDER_SPEED));
+        return setSpeed(FeederConstants.FEEDER_SPEED);
     }
 
     public Command reverse() {
-        return this.runOnce(() -> m_feeder.set(FeederConstants.REVERSE_SPEED));
+        return setSpeed(FeederConstants.REVERSE_SPEED);
     }
 
     public Command stop() {

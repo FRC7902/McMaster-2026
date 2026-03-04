@@ -290,8 +290,8 @@ public final class Constants {
         public static final int MOTOR_CAN_ID = 23;
         public static final int BEAM_BREAK_DIO_PORT = 0; // TODO
 
-        public static final double FEEDER_SPEED = 0.5; // TODO
-        public static final double REVERSE_SPEED = 0.5; // TODO
+        public static final AngularVelocity FEEDER_SPEED = RPM.of(1000); // TODO
+        public static final AngularVelocity REVERSE_SPEED = RPM.of(-1000); // TODO
 
         public static final DCMotor MOTOR = DCMotor.getKrakenX60Foc(1);
         public static final GearBox GEARBOX = GearBox.fromStages("5:1", "24:15");
