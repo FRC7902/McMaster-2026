@@ -69,9 +69,11 @@ public class IndexerSubsystem extends SubsystemBase {
         return this.runOnce(() -> m_motor.stopMotor());
     }
 
-    // Helper method to alternate between full and half speed every 0.5 seconds
+    // Helper method to alternate between full and half speed every 0.125 seconds
     private boolean useFullSpeed() {
-        return ((int) (Timer.getFPGATimestamp() * 2)) % 2 == 0;
+        double secondFraction = Timer.getFPGATimestamp() % 1.0;
+        System.out.println(secondFraction >= 0.125);
+        return secondFraction >= 0.125;
     }
 
     // TODO: Understand why alternating between two constants doesn't pulse in
@@ -79,14 +81,14 @@ public class IndexerSubsystem extends SubsystemBase {
     public Command run() {
         return new ConditionalCommand(
                 this.runOnce(() -> setSpeed(IndexerConstants.INDEXER_FULL_SPEED)),
-                this.runOnce(() -> setSpeed(IndexerConstants.INDEXER_HALF_SPEED)),
+                stop(),
                 this::useFullSpeed).repeatedly();
     }
 
     public Command reverse() {
         return new ConditionalCommand(
                 this.runOnce(() -> setSpeed(-IndexerConstants.INDEXER_FULL_SPEED)),
-                this.runOnce(() -> setSpeed(-IndexerConstants.INDEXER_HALF_SPEED)),
+                stop(),
                 this::useFullSpeed).repeatedly();
     }
 
