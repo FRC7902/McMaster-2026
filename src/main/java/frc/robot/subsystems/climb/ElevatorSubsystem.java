@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimbConstants.ElevatorConstants;
+import frc.robot.Robot;
 import yams.mechanisms.config.ElevatorConfig;
 import yams.mechanisms.positional.Elevator;
 import yams.motorcontrollers.SmartMotorController;
@@ -46,9 +47,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final SmartMotorController m_followerSmartMotorController;
 
     private final SmartMotorControllerConfig m_leaderMotorSMCConfig;
-
-    // Elevator-specific options
-    private ElevatorConfig m_climbConfig;
 
     // Arm mechanism
     private final Elevator m_climb;
@@ -126,13 +124,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_leaderSmartMotorController = new TalonFXWrapper(m_leaderMotor, ElevatorConstants.LEADER_MOTOR,
                 m_leaderMotorSMCConfig);
 
-        m_climbConfig = new ElevatorConfig(m_leaderSmartMotorController)
+        ElevatorConfig climbConfig = new ElevatorConfig(m_leaderSmartMotorController)
                 .withMass(ElevatorConstants.MASS)
-                .withStartingHeight(ElevatorConstants.STARTING_HEIGHT)
                 .withTelemetry("Elevator", Constants.TELEMETRY_VERBOSITY)
                 .withHardLimits(ElevatorConstants.HARD_LOWER_LIMIT, ElevatorConstants.HARD_UPPER_LIMIT);
 
-        m_climb = new Elevator(m_climbConfig);
+        if (Robot.isSimulation()) {
+            climbConfig.withStartingHeight(ElevatorConstants.STARTING_HEIGHT);
+        }
+
+        m_climb = new Elevator(climbConfig);
     }
 
     /**
