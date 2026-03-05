@@ -206,10 +206,10 @@ public class RobotContainer {
             m_swerveSubsystem::getCurrentZone);
 
     private void configureBindings() {
-        Command driveFieldOrientedAnglularVelocity = m_swerveSubsystem.driveFieldOriented(driveAngularVelocity);
+        Command driveFieldOrientedAngularVelocity = m_swerveSubsystem.driveFieldOriented(driveAngularVelocity);
         Command driveFieldOrientedAutoAim = m_swerveSubsystem.driveFieldOriented(driveAutoAim);
 
-        m_swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+        m_swerveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
         m_driverController.options().onTrue((Commands.runOnce(m_swerveSubsystem::zeroGyroWithAlliance)));
         m_driverController.create().whileTrue(m_swerveSubsystem.centerModulesCommand());
