@@ -6,6 +6,8 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Inch;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.InchesPerSecond;
+import static edu.wpi.first.units.Units.InchesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -345,42 +347,48 @@ public final class Constants {
 
     public static final class ClimbConstants {
         public static final class ElevatorConstants {
-            public static final int LEADER_MOTOR_CAN_ID = 7; // TODO
-            public static final int FOLLOWER_MOTOR_CAN_ID = 8; // TODO
+            public static final int LEADER_MOTOR_CAN_ID = 55;
+            public static final int FOLLOWER_MOTOR_CAN_ID = 54;
 
-            public static final DCMotor MOTOR = DCMotor.getFalcon500Foc(2); // TODO
-            public static final MechanismGearing GEARBOX = new MechanismGearing(GearBox.fromReductionStages(3, 4)); // TODO
+            public static final DCMotor LEADER_MOTOR = DCMotor.getFalcon500Foc(1);
+            public static final DCMotor FOLLOWER_MOTOR = DCMotor.getFalcon500Foc(1);
 
-            public static final Distance CHAIN_PITCH = Inches.of(0.25); // TODO
-            public static final int TOOTH_COUNT = 22; // TODO
-            public static final Mass MASS = Pounds.of(16); // TODO
+            public static final MechanismGearing GEARBOX = new MechanismGearing(GearBox.fromReductionStages(12));
 
-            public static final double PID_kP = 1; // TODO
-            public static final double PID_kI = 0; // TODO
-            public static final double PID_kD = 0; // TODO
+            public static final Distance CHAIN_PITCH = Inches.of(0.25);
+            public static final int TOOTH_COUNT = 12;
+            public static final Mass MASS = Pounds.of(5); // TODO
+
+            public static final double PID_kP = 5;
+            public static final double PID_kI = 0;
+            public static final double PID_kD = 0;
 
             public static final double SIM_PID_kP = 1; // TODO
             public static final double SIM_PID_kI = 0; // TODO
             public static final double SIM_PID_kD = 0; // TODO
 
-            public static final AngularVelocity MAX_VELOCITY_RPM = RPM.of(5000); // TODO
-            public static final AngularAcceleration MAX_ACCELERATION_RPS2 = RotationsPerSecondPerSecond.of(2500); // TODO
+            public static final LinearVelocity MAX_VELOCITY = InchesPerSecond.of(19.34);
+            public static final LinearAcceleration MAX_ACCELERATION = InchesPerSecondPerSecond.of(174.65);
 
-            public static final double FEEDFORWARD_kS = 0; // TODO
-            public static final double FEEDFORWARD_kG = 0; // TODO
-            public static final double FEEDFORWARD_kV = 0; // TODO
-            public static final double FEEDFORWARD_kA = 0; // TODO
+            public static final double FEEDFORWARD_kS = 0.24248;
+            public static final double FEEDFORWARD_kG = 0.0059565;
+            public static final double FEEDFORWARD_kV = 1.4656;
+            public static final double FEEDFORWARD_kA = 0.022498;
 
-            public static final Current STATOR_CURRENT_LIMIT = Amps.of(40); // TODO
+            public static final Current STATOR_CURRENT_LIMIT = Amps.of(80);
+            public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(70);
 
             public static final Time CLOSED_LOOP_RAMP_RATE = Seconds.of(0.25); // TODO
             public static final Time OPEN_LOOP_RAMP_RATE = Seconds.of(0.25); // TODO
 
-            public static final Distance STARTING_HEIGHT = Meters.of(0); // TODO
-            public static final Distance SOFT_LOWER_LIMIT = Meters.of(0); // TODO
-            public static final Distance SOFT_UPPER_LIMIT = Meters.of(2); // TODO
-            public static final Distance HARD_LOWER_LIMIT = Meters.of(0); // TODO
-            public static final Distance HARD_UPPER_LIMIT = Meters.of(3); // TODO
+            public static final Distance SOFT_LOWER_LIMIT = Meters.of(0);
+            public static final Distance SOFT_UPPER_LIMIT = Meters.of(0.42);
+            public static final Distance HARD_LOWER_LIMIT = Meters.of(0);
+            public static final Distance HARD_UPPER_LIMIT = Meters.of(0.420439);
+
+            public static final Distance STARTING_HEIGHT = SOFT_LOWER_LIMIT;
+            public static final Distance FIRST_LEVEL_HEIGHT = Meters.of(0.20); // TODO
+            public static final Distance SECOND_LEVEL_HEIGHT = Meters.of(0.30); // TODO
 
             public static final Time HOMING_DEBOUNCE_TIME = Seconds.of(0.4); // TODO
             public static final Voltage HOMING_RUN_VOLTS = Volts.of(-2); // TODO
