@@ -39,6 +39,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
         // Configure current limits for motor protection.
         m_motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        m_motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         m_motorConfig.CurrentLimits.StatorCurrentLimit = IndexerConstants.MOTOR_STATOR_CURRENT_LIMIT;
         m_motorConfig.CurrentLimits.SupplyCurrentLimit = IndexerConstants.MOTOR_SUPPLY_CURRENT_LIMIT;
 
