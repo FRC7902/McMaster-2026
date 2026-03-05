@@ -242,6 +242,10 @@ public class RobotContainer {
                 .onTrue(m_indexerSubsystem.run())
                 .onFalse(m_indexerSubsystem.stop()
                         .unless(m_driverController.L2()::getAsBoolean));
+        m_driverController.R2()
+                .onTrue(m_intakeRollerSubsystem.intake())
+                .onFalse(m_intakeRollerSubsystem.stop()
+                        .unless(m_driverController.L2()::getAsBoolean));
 
         if (Robot.isSimulation()) {
             SimulatedArena.getInstance().addGamePiece(new RebuiltFuelOnField(new Translation2d(3, 3)));
