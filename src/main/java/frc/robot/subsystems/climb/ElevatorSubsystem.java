@@ -37,7 +37,8 @@ import yams.motorcontrollers.SmartMotorControllerConfig.MotorMode;
 import yams.motorcontrollers.remote.TalonFXWrapper;
 
 public class ElevatorSubsystem extends SubsystemBase {
-    private final TalonFX m_motor;
+    private final TalonFX m_leaderMotor;
+    private final TalonFX m_followerMotor;
 
     // Generic Smart Motor Controller with our options and vendor motor.
     private final SmartMotorController m_leaderSmartMotorController;
@@ -52,7 +53,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final Elevator m_climb;
 
     public ElevatorSubsystem() {
-        m_motor = new TalonFX(ElevatorConstants.LEADER_MOTOR_CAN_ID);
+        m_leaderMotor = new TalonFX(ElevatorConstants.LEADER_MOTOR_CAN_ID);
+        m_followerMotor = new TalonFX(ElevatorConstants.FOLLOWER_MOTOR_CAN_ID);
 
         SmartMotorControllerConfig followerMotorSMCConfig = new SmartMotorControllerConfig(this)
                 .withMotorInverted(true)
@@ -85,7 +87,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                         ElevatorConstants.FEEDFORWARD_kA))
                 .withSoftLimit(ElevatorConstants.SOFT_LOWER_LIMIT, ElevatorConstants.SOFT_UPPER_LIMIT);
 
-        m_followerSmartMotorController = new TalonFXWrapper(m_motor, ElevatorConstants.FOLLOWER_MOTOR,
+        m_followerSmartMotorController = new TalonFXWrapper(m_followerMotor, ElevatorConstants.FOLLOWER_MOTOR,
                 followerMotorSMCConfig);
 
         m_leaderMotorSMCConfig = new SmartMotorControllerConfig(this)
@@ -120,7 +122,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .withSoftLimit(ElevatorConstants.SOFT_LOWER_LIMIT, ElevatorConstants.SOFT_UPPER_LIMIT)
                 .withLooselyCoupledFollowers(m_followerSmartMotorController);
 
-        m_leaderSmartMotorController = new TalonFXWrapper(m_motor, ElevatorConstants.LEADER_MOTOR,
+        m_leaderSmartMotorController = new TalonFXWrapper(m_leaderMotor, ElevatorConstants.LEADER_MOTOR,
                 m_leaderMotorSMCConfig);
 
         m_climbConfig = new ElevatorConfig(m_leaderSmartMotorController)
@@ -189,11 +191,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public Optional<Distance> getSetpoint() {
-        Optional<Angle> angle_setpoint = m_climb.getMechanismSetpoint();
-        if (!angle_setpoint.isPresent()) {
+        Optional<Angle> angleSetpoint = m_climb.getMechanismSetpoint();
+        if (!angleSetpoint.isPresent()) {
             return Optional.empty();
         }
-        return Optional.of(m_leaderMotorSMCConfig.convertFromMechanism(angle_setpoint.get()));
+        return Optional.of(m_leaderMotorSMCConfig.convertFromMechanism(angleSetpoint.get()));
     }
 
     public Command stop() {
