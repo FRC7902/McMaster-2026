@@ -118,8 +118,8 @@ public final class Constants {
             public static final int MOTOR_CAN_ID = 18;
             public static final DCMotor MOTOR = DCMotor.getKrakenX60Foc(1);
 
-            public static final int EXTENDED_LIMIT_SWITCH_DIO = 0; // TODO
-            public static final int RETRACTED_LIMIT_SWITCH_DIO = 1; // TODO
+            public static final int EXTENDED_LIMIT_SWITCH_DIO = 3;
+            public static final int RETRACTED_LIMIT_SWITCH_DIO = 4;
 
             public static final boolean INVERT_MOTOR = true;
 
@@ -442,5 +442,5 @@ public final class Constants {
     public static final SmartMotorControllerConfig.TelemetryVerbosity TELEMETRY_VERBOSITY = SmartMotorControllerConfig.TelemetryVerbosity.LOW; // TODO:
 
     public static final SwerveDriveTelemetry.TelemetryVerbosity SWERVE_TELEMETRY_VERBOSITY = SwerveDriveTelemetry.TelemetryVerbosity.POSE;
-    public static final boolean TELEMETRY = false; // TODO: Set to false for competition to reduce network traffic
+    public static final boolean TELEMETRY = true; // TODO: Set to false for competition to reduce network traffic
 }

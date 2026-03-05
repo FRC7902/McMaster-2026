@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants.LinearIntakeConstants;
 import frc.robot.Constants.MechanismPositionConstants;
@@ -41,6 +42,9 @@ public class LinearIntakeSubsystem extends SubsystemBase {
 
     private final DigitalInput m_extendedLimitSwitch;
     private final DigitalInput m_retractedLimitSwitch;
+
+    private final Trigger m_extendedTrigger;
+    private final Trigger m_retractedTrigger;
 
     public LinearIntakeSubsystem() {
         m_motor = new TalonFX(LinearIntakeConstants.MOTOR_CAN_ID);
@@ -97,6 +101,19 @@ public class LinearIntakeSubsystem extends SubsystemBase {
 
         m_extendedLimitSwitch = new DigitalInput(LinearIntakeConstants.EXTENDED_LIMIT_SWITCH_DIO);
         m_retractedLimitSwitch = new DigitalInput(LinearIntakeConstants.RETRACTED_LIMIT_SWITCH_DIO);
+
+        m_extendedTrigger = new Trigger(this::getExtendedLimitSwitch);
+        m_retractedTrigger = new Trigger(this::getRetractedLimitSwitch);
+
+        m_extendedTrigger.onTrue(handleExtendedLimitSwitch());
+        m_retractedTrigger.onTrue(handleRetractedLimitSwitch());
+
+        // TODO: Call this in robot init
+        if (getExtendedLimitSwitch()) {
+            handleExtendedLimitSwitch();
+        } else if (getRetractedLimitSwitch()) {
+            handleRetractedLimitSwitch();
+        }
     }
 
     public Command sysId() {
@@ -139,15 +156,15 @@ public class LinearIntakeSubsystem extends SubsystemBase {
     }
 
     public Command extend() {
-        return setPosition(LinearIntakeConstants.EXTENDED_POSITION).until(this::isAtTargetPosition);
+        return setPosition(LinearIntakeConstants.EXTENDED_POSITION);
     }
 
     public Command retract() {
-        return setPosition(LinearIntakeConstants.MIDPOINT_POSITION).until(this::isAtTargetPosition);
+        return setPosition(LinearIntakeConstants.MIDPOINT_POSITION);
     }
 
     public Command fullyRetract() {
-        return setPosition(LinearIntakeConstants.RETRACTED_POSITION).until(this::isAtTargetPosition);
+        return setPosition(LinearIntakeConstants.RETRACTED_POSITION);
     }
 
     public Command set(double dutycycle) {
@@ -183,25 +200,27 @@ public class LinearIntakeSubsystem extends SubsystemBase {
         return m_retractedLimitSwitch.get();
     }
 
-    private void handleLimitSwitches() {
-        if (getExtendedLimitSwitch()) {
-            m_smartMotorController.setEncoderPosition(LinearIntakeConstants.EXTENDED_POSITION);
-        } else if (getRetractedLimitSwitch()) {
-            m_smartMotorController.setEncoderPosition(LinearIntakeConstants.MIDPOINT_POSITION);
-        }
+    public Command handleExtendedLimitSwitch() {
+        return this.runOnce(() -> m_smartMotorController.setEncoderPosition(LinearIntakeConstants.EXTENDED_POSITION));
+    }
+
+    public Command handleRetractedLimitSwitch() {
+        return this.runOnce(
+                () -> m_smartMotorController.setEncoderPosition(LinearIntakeConstants.RETRACTED_POSITION));
     }
 
     @Override
     public void periodic() {
         m_linearIntake.updateTelemetry();
 
-        handleLimitSwitches();
-
         if (Constants.TELEMETRY) {
             SmartDashboard.putNumber("LinearIntakeMech/position (m)", getPosition().in(Meters));
             SmartDashboard.putNumber("LinearIntakeMech/setpoint (m)",
                     getSetpoint().map(pos -> pos.in(Meters)).orElse(Double.NaN));
             SmartDashboard.putString("LinearIntakeMech/currentPositionEnum", getCurrentPositionEnum().name());
+
+            SmartDashboard.putBoolean("LinearIntakeMech/extendedLimitSwitch", getExtendedLimitSwitch());
+            SmartDashboard.putBoolean("LinearIntakeMech/retractedLimitSwitch", getRetractedLimitSwitch());
         }
     }
 
