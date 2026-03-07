@@ -183,7 +183,7 @@ public final class Constants {
         public static final Distance DIAMETER_INCHES = Inches.of(3);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(0.0006438072);
 
-        public static final Current STATOR_CURRENT_LIMIT_AMPS = Amps.of(50);
+        public static final Current STATOR_CURRENT_LIMIT_AMPS = Amps.of(80);
 
         public static final double PID_kP = 0.003; // TODO
         public static final double PID_kI = 0.0; // TODO
@@ -201,19 +201,15 @@ public final class Constants {
         public static final Time CLOSED_LOOP_RAMP_RATE_SEC = Seconds.of(0.25);
         public static final Time OPEN_LOOP_RAMP_RATE_SEC = Seconds.of(0.25);
 
-        public static final AngularVelocity MAX_VELOCITY_RPM = RPM.of(11568);
-        public static final AngularVelocity SIM_MAX_VELOCITY_RPM = RPM.of(11568);
+        public static final AngularVelocity MAX_VELOCITY_RPM = RPM.of(8000);
+        public static final AngularVelocity SIM_MAX_VELOCITY_RPM = RPM.of(8000);
         public static final AngularAcceleration MAX_ACCELERATION_RPS2 = RotationsPerSecondPerSecond.of(173);
 
-        public static final AngularVelocity SOFT_LIMIT_RPM = RPM.of(11568); // TODO
+        public static final AngularVelocity SOFT_LIMIT_RPM = RPM.of(8000); // TODO
 
-        public static final AngularVelocity ALLIANCE_SHOOTING_VELOCITY = RPM.of(2216);
-        public static final AngularVelocity NEUTRAL_SHOOTING_VELOCITY = RPM.of(2674);
-        public static final AngularVelocity OPPONENT_SHOOTING_VELOCITY = RPM.of(2900);
+        public static final AngularVelocity DEFAULT_VELOCITY = RPM.of(3500);;
 
-        public static final AngularVelocity DEFAULT_VELOCITY = RPM.of(3500);
-
-        public static final AngularVelocity RPM_TARGET_ERROR = RPM.of(50); // ~2% of ALLIANCE_SHOOTING_VELOCITY
+        public static final AngularVelocity RPM_TARGET_ERROR = RPM.of(100); // ~2% of ALLIANCE_SHOOTING_VELOCITY
         public static final Time AT_RPM_DEBOUNCE_TIME = Seconds.of(0.2); // TODO
 
         public static final Translation3d RELATIVE_POSITION = new Translation3d(Inches.of(-5.087),
@@ -331,17 +327,16 @@ public final class Constants {
 
         public static final MotorMode IDLE_MODE = MotorMode.BRAKE;
 
-        public static final boolean LEADER_MOTOR_INVERTED = false; // TODO
-        public static final boolean FOLLOWER_MOTOR_INVERTED = true;
+        public static final boolean MOTOR_INVERTED = true;
 
-        public static final Distance DIAMETER_INCHES = Inches.of(3);
+        public static final Distance DIAMETER_INCHES = Inches.of(4);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(
                 0.0009446408);
 
         public static final Current STATOR_CURRENT_LIMIT_AMPS = Amps.of(60);
         public static final Current SUPPLY_CURRENT_LIMIT_AMPS = Amps.of(70);
 
-        public static final double PID_kP = 0.0; // TODO
+        public static final double PID_kP = 1.0; // TODO
         public static final double PID_kI = 0.0; // TODO
         public static final double PID_kD = 0.0; // TODO
 
@@ -477,5 +472,5 @@ public final class Constants {
     public static final SmartMotorControllerConfig.TelemetryVerbosity TELEMETRY_VERBOSITY = SmartMotorControllerConfig.TelemetryVerbosity.LOW; // TODO:
 
     public static final SwerveDriveTelemetry.TelemetryVerbosity SWERVE_TELEMETRY_VERBOSITY = SwerveDriveTelemetry.TelemetryVerbosity.POSE;
-    public static final boolean TELEMETRY = true; // TODO: Set to false for competition to reduce network traffic
+    public static final boolean TELEMETRY = false; // TODO: Set to false for competition to reduce network traffic
 }

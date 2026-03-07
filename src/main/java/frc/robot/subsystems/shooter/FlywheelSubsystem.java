@@ -169,17 +169,6 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     /**
-     * Starts the flywheel spinning at the shooting RPM, the speed at which it
-     * should
-     * spin when the shooter is actively shooting.
-     * 
-     * @return a Command that starts the flywheel at the shooting RPM when executed
-     */
-    public Command shoot() {
-        return setSpeed(FlywheelConstants.ALLIANCE_SHOOTING_VELOCITY);
-    }
-
-    /**
      * Starts the flywheel spinning at the default RPM, the speed at which it
      * should spin when the shooter is not actively shooting.
      * 
