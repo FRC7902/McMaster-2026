@@ -112,7 +112,7 @@ public class LinearIntakeSubsystem extends SubsystemBase {
 
     public Command sysId() {
         return m_linearIntake.sysId(
-                Volts.of(3), Volts.of(3).per(Second), Second.of(10))
+                Volts.of(2), Volts.of(0.5).per(Second), Second.of(10))
                 .beforeStarting(SignalLogger::start)
                 .finallyDo(SignalLogger::stop);
     }
