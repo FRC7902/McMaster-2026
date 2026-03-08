@@ -66,7 +66,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .withSupplyCurrentLimit(ElevatorConstants.SUPPLY_CURRENT_LIMIT)
                 .withClosedLoopRampRate(ElevatorConstants.CLOSED_LOOP_RAMP_RATE)
                 .withOpenLoopRampRate(ElevatorConstants.OPEN_LOOP_RAMP_RATE)
-                .withTelemetry("ElevatorMotor", Constants.TELEMETRY_VERBOSITY)
+                .withTelemetry("FollowerElevatorMotor", Constants.TELEMETRY_VERBOSITY)
                 .withClosedLoopController(
                         ElevatorConstants.PID_kP,
                         ElevatorConstants.PID_kI,
@@ -100,7 +100,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .withSupplyCurrentLimit(ElevatorConstants.SUPPLY_CURRENT_LIMIT)
                 .withClosedLoopRampRate(ElevatorConstants.CLOSED_LOOP_RAMP_RATE)
                 .withOpenLoopRampRate(ElevatorConstants.OPEN_LOOP_RAMP_RATE)
-                .withTelemetry("ExponentiallyProfiledElevatorMotor", Constants.TELEMETRY_VERBOSITY)
+                .withTelemetry("LeaderElevatorMotor", Constants.TELEMETRY_VERBOSITY)
                 .withClosedLoopController(
                         ElevatorConstants.PID_kP,
                         ElevatorConstants.PID_kI,
