@@ -100,7 +100,11 @@ public class ShooterSubsystem extends SubsystemBase {
         return Commands.parallel(
                 m_hoodSubsystem.lowerHood(),
                 m_flywheelSubsystem.setDefaultRPM(),
-                m_feederSubsystem.stop())
+                Commands.sequence(
+                        Commands.deadline(
+                                Commands.waitSeconds(0.5),
+                                m_feederSubsystem.reverse()),
+                        m_feederSubsystem.stop()))
                 .withName("SHTR - Stop Shooting");
     }
 
