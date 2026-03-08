@@ -18,6 +18,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -89,8 +90,7 @@ public class LinearIntakeSubsystem extends SubsystemBase {
                 .withMaxRobotLength(MechanismPositionConstants.ROBOT_MAX_LENGTH)
                 .withRelativePosition(LinearIntakeConstants.RELATIVE_POSITION);
 
-        ElevatorConfig m_linearConfig = new ElevatorConfig(m_smartMotorController)
-                .withStartingHeight(LinearIntakeConstants.RETRACTED_POSITION)
+        ElevatorConfig linearConfig = new ElevatorConfig(m_smartMotorController)
                 .withHardLimits(
                         LinearIntakeConstants.HARD_LIMIT_MIN,
                         LinearIntakeConstants.HARD_LIMIT_MAX)
@@ -99,7 +99,11 @@ public class LinearIntakeSubsystem extends SubsystemBase {
                 .withMass(LinearIntakeConstants.MECHANISM_MASS)
                 .withHorizontalElevator();
 
-        m_linearIntake = new Elevator(m_linearConfig);
+        if (RobotBase.isSimulation()) {
+            linearConfig.withStartingHeight(LinearIntakeConstants.RETRACTED_POSITION);
+        }
+
+        m_linearIntake = new Elevator(linearConfig);
 
         m_extendedLimitSwitch = new DigitalInput(LinearIntakeConstants.EXTENDED_LIMIT_SWITCH_DIO);
         m_retractedLimitSwitch = new DigitalInput(LinearIntakeConstants.RETRACTED_LIMIT_SWITCH_DIO);

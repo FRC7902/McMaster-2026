@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants.TongueConstants;
 import frc.robot.Constants.MechanismPositionConstants;
+import frc.robot.Robot;
 import yams.gearing.MechanismGearing;
 import yams.mechanisms.config.ElevatorConfig;
 import yams.mechanisms.config.MechanismPositionConfig;
@@ -62,14 +63,17 @@ public class TongueSubsystem extends SubsystemBase {
                 .withMaxRobotLength(MechanismPositionConstants.ROBOT_MAX_LENGTH)
                 .withRelativePosition(TongueConstants.RELATIVE_POSITION);
 
-        ElevatorConfig config = new ElevatorConfig(m_smartMotorController)
-                .withStartingHeight(TongueConstants.STARTING_HEIGHT)
+        ElevatorConfig tongueConfig = new ElevatorConfig(m_smartMotorController)
                 .withHardLimits(TongueConstants.HARD_LIMIT_MIN, TongueConstants.HARD_LIMIT_MAX)
                 .withTelemetry("Elevator", TelemetryVerbosity.HIGH)
                 .withMechanismPositionConfig(robotToMechanism)
                 .withMass(TongueConstants.MECHANISM_MASS);
 
-        m_tongue = new Elevator(config);
+        if (Robot.isSimulation()) {
+            tongueConfig.withStartingHeight(TongueConstants.STARTING_HEIGHT);
+        }
+
+        m_tongue = new Elevator(tongueConfig);
     }
 
     /**

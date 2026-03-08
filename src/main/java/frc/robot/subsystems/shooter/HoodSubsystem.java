@@ -81,17 +81,12 @@ public class HoodSubsystem extends SubsystemBase {
                 .withOpenLoopRampRate(HoodConstants.OPEN_LOOP_RAMP_RATE_SEC)
                 .withFeedforward(HoodConstants.FEEDFORWARD)
                 .withSimFeedforward(HoodConstants.SIM_FEEDFORWARD)
-                .withControlMode(ControlMode.CLOSED_LOOP)
-                .withStartingPosition(HoodConstants.SOFT_LIMIT_MIN);
+                .withControlMode(ControlMode.CLOSED_LOOP);
         // .withExternalEncoder(m_encoder)
         // .withExternalEncoderInverted(HoodConstants.EXTERNAL_ENCODER_INVERTED)
         // .withExternalEncoderGearing(HoodConstants.EXTERNAL_ENCODER_GEARING)
         // .withExternalEncoderZeroOffset(HoodConstants.EXTERNAL_ENCODER_ZERO_OFFSET)
         // .withUseExternalFeedbackEncoder(true);
-
-        // if (Robot.isSimulation()) {
-        // m_smcConfig.withStartingPosition(HoodConstants.SOFT_LIMIT_MIN);
-        // }
 
         m_smartMotorController = new TalonFXWrapper(
                 m_motor,
@@ -111,8 +106,7 @@ public class HoodSubsystem extends SubsystemBase {
                 .withSoftLimits(HoodConstants.SOFT_LIMIT_MIN, HoodConstants.SOFT_LIMIT_MAX)
                 .withHardLimit(HoodConstants.HARD_LIMIT_MIN, HoodConstants.HARD_LIMIT_MAX)
                 .withLength(HoodConstants.LENGTH)
-                .withMass(HoodConstants.MASS)
-                .withStartingPosition(HoodConstants.SOFT_LIMIT_MIN);
+                .withMass(HoodConstants.MASS);
 
         if (Robot.isSimulation()) {
             m_hoodConfig.withStartingPosition(HoodConstants.SOFT_LIMIT_MIN);
