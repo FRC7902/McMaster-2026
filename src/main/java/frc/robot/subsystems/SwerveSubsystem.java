@@ -709,9 +709,9 @@ public class SwerveSubsystem extends SubsystemBase {
         Translation2d target = getAutoAimTarget();
 
         if (isRedAlliance()) {
-            target.minus(FieldConstants.AUTO_AIM_OFFSET);
+            target = target.minus(FieldConstants.AUTO_AIM_OFFSET);
         } else {
-            target.plus(FieldConstants.AUTO_AIM_OFFSET);
+            target = target.plus(FieldConstants.AUTO_AIM_OFFSET);
         }
 
         Translation2d delta = target.minus(getFutureTranslation());
