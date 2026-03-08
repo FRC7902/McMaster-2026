@@ -58,7 +58,7 @@ public final class Constants {
         public static final double MAX_SPEED = Units.feetToMeters(16); // TODO: Try increasing this to see if it does
                                                                        // anything
 
-        public static final double AUTO_AIM_VELOCITY_COMPENSATION_FACTOR = 1.5; // TODO
+        public static final double AUTO_AIM_VELOCITY_COMPENSATION_FACTOR = 1.2; // TODO
         public static final Angle AUTO_AIM_ANGLE_TARGET_ERROR = Degrees.of(5); // TODO
         public static final double AUTO_AIM_SCALE_TRANSLATION = 0.3; // TODO
 
@@ -319,8 +319,8 @@ public final class Constants {
         public static final int MOTOR_CAN_ID = 23;
         public static final int BEAM_BREAK_DIO_PORT = 2; // TODO
 
-        public static final AngularVelocity FEEDER_SPEED = RPM.of(1000); // TODO
-        public static final AngularVelocity REVERSE_SPEED = RPM.of(-1000); // TODO
+        public static final AngularVelocity FEEDER_SPEED = RPM.of(2000); // TODO
+        public static final AngularVelocity REVERSE_SPEED = RPM.of(-2000); // TODO
 
         public static final DCMotor MOTOR = DCMotor.getKrakenX60Foc(1);
         public static final GearBox GEARBOX = GearBox.fromStages("5:1", "24:15");
