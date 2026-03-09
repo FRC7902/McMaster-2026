@@ -47,6 +47,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousExit() {
+        // TODO: Check if it works here, or if it needs to be in teleopInit
+        CommandScheduler.getInstance().schedule(m_robotContainer.stopAllSubsystems());
     }
 
     @Override

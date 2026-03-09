@@ -437,4 +437,14 @@ public class RobotContainer {
         m_limelightA.updateLocalization(m_swerveSubsystem.getSwerveDrive());
         m_limelightC.updateLocalization(m_swerveSubsystem.getSwerveDrive());
     }
+
+    public Command stopAllSubsystems() {
+        return Commands.parallel(
+                m_swerveSubsystem.stop(),
+                m_shooterSubsystem.stopShooting(),
+                m_indexerSubsystem.stop(),
+                m_hopperSubsystem.retract(),
+                m_intakeRollerSubsystem.stop(),
+                m_linearIntakeSubsystem.retract());
+    }
 }
