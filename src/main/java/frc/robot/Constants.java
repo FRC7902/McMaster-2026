@@ -126,8 +126,8 @@ public final class Constants {
 
             public static final int LEFT_EXTENDED_LIMIT_SWITCH_DIO = 3;
             public static final int LEFT_RETRACTED_LIMIT_SWITCH_DIO = 4;
-            public static final int RIGHT_EXTENDED_LIMIT_SWITCH_DIO = 5; // TODO
-            public static final int RIGHT_RETRACTED_LIMIT_SWITCH_DIO = 6; // TODO
+            public static final int RIGHT_EXTENDED_LIMIT_SWITCH_DIO = 5;
+            public static final int RIGHT_RETRACTED_LIMIT_SWITCH_DIO = 7;
 
             public static final boolean INVERT_MOTOR = true;
             public static final MotorMode IDLE_MODE = MotorMode.COAST;

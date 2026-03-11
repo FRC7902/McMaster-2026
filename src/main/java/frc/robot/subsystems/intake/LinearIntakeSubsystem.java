@@ -239,8 +239,10 @@ public class LinearIntakeSubsystem extends SubsystemBase {
                     getSetpoint().map(pos -> pos.in(Meters)).orElse(Double.NaN));
             SmartDashboard.putString("LinearIntakeMech/currentPositionEnum", getCurrentPositionEnum().name());
 
-            SmartDashboard.putBoolean("LinearIntakeMech/extendedLimitSwitch", getExtendedLimitSwitch());
-            SmartDashboard.putBoolean("LinearIntakeMech/retractedLimitSwitch", getRetractedLimitSwitch());
+            SmartDashboard.putBoolean("LinearIntakeMech/leftExtendedLimitSwitch", m_leftExtendedLimitSwitch.get());
+            SmartDashboard.putBoolean("LinearIntakeMech/leftRetractedLimitSwitch", m_leftRetractedLimitSwitch.get());
+            SmartDashboard.putBoolean("LinearIntakeMech/rightExtendedLimitSwitch", m_rightExtendedLimitSwitch.get());
+            SmartDashboard.putBoolean("LinearIntakeMech/rightRetractedLimitSwitch", m_rightRetractedLimitSwitch.get());
         }
     }
 
