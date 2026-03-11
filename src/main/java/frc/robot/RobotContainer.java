@@ -163,7 +163,7 @@ public class RobotContainer {
                 autoAimHeadingY());
 
         autoChooser.addCmd("Right Neutral Zone Auto", m_autos::rightAuto);
-        autoChooser.addCmd("Left Neutral Zone Auto", m_autos::leftAuto);
+        // autoChooser.addCmd("Left Neutral Zone Auto", m_autos::leftAuto);
         autoChooser.addCmd("Center Shoot Preload Auto", m_autos::shootPreloadAuto);
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
