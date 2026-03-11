@@ -140,7 +140,7 @@ public class Autos {
                                 () -> m_swerveSubsystem.getDistanceToTarget(true),
                                 m_swerveSubsystem::isAutoAimOnTarget)));
     }
-    
+
     public Command shootPreloadAuto() {
         return Commands.sequence(
                 m_autoFactory.resetOdometry("ShootPreloadAuto"),

@@ -266,7 +266,7 @@ public final class Constants {
         public static final double EXTERNAL_ENCODER_GEARING = 17;
         public static final Angle EXTERNAL_ENCODER_ZERO_OFFSET = Degrees.of(163.8); // TODO
 
-        public static final Angle ANGLE_TARGET_ERROR = Degrees.of(5); // TODO
+        public static final Angle ANGLE_TARGET_ERROR = Degrees.of(1.7);
         public static final double AT_ANGLE_DEBOUNCE_TIME = 0.2; // TODO
 
         public static final Translation3d RELATIVE_POSITION = new Translation3d(Inches.of(-5.087),

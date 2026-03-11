@@ -424,9 +424,11 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public void zeroGyroWithAlliance() {
         if (isRedAlliance()) {
-            zeroGyro();
-            // Set the pose 180 degrees
-            resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
+            swerveDrive.setGyroOffset(
+                    swerveDrive.getGyro().getRawRotation3d().minus(new Rotation3d(new Rotation2d(Degrees.of(180)))));
+
+            resetOdometry(new Pose2d(getPose().getTranslation(),
+                    Rotation2d.fromDegrees(180)));
         } else {
             zeroGyro();
         }

@@ -110,6 +110,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 m_hoodSubsystem.lowerHood(),
                 m_flywheelSubsystem.setDefaultRPM(),
                 Commands.sequence(
+                        m_feederSubsystem.stop(),
                         Commands.deadline(
                                 Commands.waitSeconds(0.5),
                                 m_feederSubsystem.reverse()),
