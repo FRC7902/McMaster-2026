@@ -170,7 +170,7 @@ public class RobotContainer {
         RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
 
         m_limelightA = new LimelightWrapper("limelight-a", true);
-        m_limelightC = new LimelightWrapper("limelight-c", false);
+        m_limelightC = new LimelightWrapper("limelight-b", true);
 
         // Only do this for LL4, so we use heading readings from MT1 from 3G?
         m_limelightA.getSettings().withImuMode(ImuMode.ExternalImu).save();
