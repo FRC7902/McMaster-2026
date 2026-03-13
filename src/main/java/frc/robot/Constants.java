@@ -106,8 +106,8 @@ public final class Constants {
     public static class IndexerConstants {
         public static final int MOTOR_CAN_ID = 19;
 
-        public static final int MOTOR_STATOR_CURRENT_LIMIT = 40; // TODO
-        public static final int MOTOR_SUPPLY_CURRENT_LIMIT = 70; // TODO
+        public static final int MOTOR_STATOR_CURRENT_LIMIT = 40;
+        public static final int MOTOR_SUPPLY_CURRENT_LIMIT = 40;
 
         public static final double INDEXER_FULL_SPEED = 1; // TODO
         public static final double INDEXER_HALF_SPEED = 0; // TODO
@@ -155,6 +155,7 @@ public final class Constants {
             public static final Time OPEN_LOOP_RAMP_RATE = Seconds.of(0.25);
 
             public static final Current STATOR_CURRENT_LIMIT = Amps.of(40);
+            public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(10);
 
             public static final Distance SOFT_LIMIT_MIN = Meters.of(0);
             public static final Distance SOFT_LIMIT_MAX = Meters.of(0.31);
@@ -162,7 +163,7 @@ public final class Constants {
             public static final Distance HARD_LIMIT_MAX = Meters.of(0.31);
 
             public static final Distance EXTENDED_POSITION = SOFT_LIMIT_MAX;
-            public static final Distance MIDPOINT_POSITION = Meters.of(0.10);
+            public static final Distance MIDPOINT_POSITION = Meters.of(0.15);
             public static final Distance SHUFFLE_POSITION = Meters.of(0.025);
             public static final Distance POSITION_TARGET_ERROR = Inches.of(0.5); // TODO
             public static final Distance RETRACTED_POSITION = SOFT_LIMIT_MIN;
@@ -231,7 +232,8 @@ public final class Constants {
         public static final GearBox GEARBOX = GearBox.fromReductionStages(80.0 / 14.0, 24.0 / 18.0,
                 170.0 / 10.0);
 
-        public static final Current STATOR_CURRENT_LIMIT_AMPS = Amps.of(40); // TODO
+        public static final Current STATOR_CURRENT_LIMIT = Amps.of(40);
+        public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(40);
 
         public static final double PID_kP = 30.865; // TODO
         public static final double PID_kI = 0.0; // TODO
@@ -344,7 +346,7 @@ public final class Constants {
                 0.0009446408);
 
         public static final Current STATOR_CURRENT_LIMIT_AMPS = Amps.of(60);
-        public static final Current SUPPLY_CURRENT_LIMIT_AMPS = Amps.of(70);
+        public static final Current SUPPLY_CURRENT_LIMIT_AMPS = Amps.of(50);
 
         public static final double PID_kP = 0.0; // TODO
         public static final double PID_kI = 0.0; // TODO

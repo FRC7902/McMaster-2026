@@ -76,6 +76,7 @@ public class LinearIntakeSubsystem extends SubsystemBase {
                 .withIdleMode(LinearIntakeConstants.IDLE_MODE)
                 .withTelemetry("LinearIntakeMotor", Constants.TELEMETRY_VERBOSITY)
                 .withStatorCurrentLimit(LinearIntakeConstants.STATOR_CURRENT_LIMIT)
+                .withSupplyCurrentLimit(LinearIntakeConstants.SUPPLY_CURRENT_LIMIT)
                 .withMotorInverted(LinearIntakeConstants.INVERT_MOTOR)
                 .withClosedLoopRampRate(LinearIntakeConstants.CLOSED_LOOP_RAMP_RATE)
                 .withOpenLoopRampRate(LinearIntakeConstants.OPEN_LOOP_RAMP_RATE)
