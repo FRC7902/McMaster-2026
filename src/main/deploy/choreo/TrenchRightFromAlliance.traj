@@ -17,7 +17,7 @@
  },
  "params":{
   "waypoints":[
-    {"x":{"exp":"(trenchAllianceX - allianceStartOffsetX) m", "val":2.01208782196}, "y":{"exp":"(centerY - centerStartOffsetY) m", "val":2.6757147254900007}, "heading":{"exp":"180 deg", "val":3.141592653589793}, "intervals":16, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"(trenchAllianceX - allianceStartOffsetX) m", "val":2.01208782196}, "y":{"exp":"(centerY - centerStartOffsetY) m", "val":2.6757147254900007}, "heading":{"exp":"180 deg", "val":3.141592653589793}, "intervals":17, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
     {"x":{"exp":"(trenchAllianceX - trenchEntryOffset) m", "val":2.7386207580599997}, "y":{"exp":"trenchBottomY m", "val":0.632}, "heading":{"exp":"0 deg", "val":0.0}, "intervals":11, "split":false, "fixTranslation":true, "fixHeading":false, "overrideIntervals":false},
     {"x":{"exp":"trenchAllianceX m", "val":4.015}, "y":{"exp":"trenchBottomY m", "val":0.632}, "heading":{"exp":"0 deg", "val":0.0}, "intervals":14, "split":false, "fixTranslation":true, "fixHeading":false, "overrideIntervals":false},
     {"x":{"exp":"(trenchAllianceX + trenchEntryOffset) m", "val":5.29137924194}, "y":{"exp":"trenchBottomY m", "val":0.632}, "heading":{"exp":"180 deg", "val":3.141592653589793}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],

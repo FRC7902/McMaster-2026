@@ -95,7 +95,7 @@ public class Autos {
                         Commands.waitSeconds(2),
                         m_swerveSubsystem.stop(),
                         m_indexerSubsystem.run(),
-										m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+                        m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
                         m_shooterSubsystem.aimAndShoot(
                                 () -> m_swerveSubsystem.getDistanceToTarget(true),
                                 m_swerveSubsystem::isAutoAimOnTarget)),
@@ -106,7 +106,7 @@ public class Autos {
                         m_indexerSubsystem.run(),
                         m_hopperSubsystem.retract(),
                         m_linearIntakeSubsystem.fullyRetract(),
-										m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+                        m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
                         m_shooterSubsystem.aimAndShoot(
                                 () -> m_swerveSubsystem.getDistanceToTarget(true),
                                 m_swerveSubsystem::isAutoAimOnTarget)),
@@ -148,7 +148,7 @@ public class Autos {
                 Commands.waitSeconds(3),
                 m_swerveSubsystem.stop(),
                 Commands.parallel(
-										m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+                        m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
                         m_indexerSubsystem.run(),
                         m_intakeRollerSubsystem.intake(),
                         m_shooterSubsystem.aimAndShootIgnoreCheck(
@@ -160,32 +160,29 @@ public class Autos {
         return Commands.sequence(
                 m_autoFactory.resetOdometry("ToDepot"),
                 m_autoFactory.trajectoryCmd("ToDepot"),
-								Commands.deadline(
-										Commands.waitSeconds(7),
-										m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
-										m_indexerSubsystem.run(),
-										m_intakeRollerSubsystem.intake(),
-										m_shooterSubsystem.aimAndShootIgnoreCheck(
-												() -> m_swerveSubsystem.getDistanceToTarget(true)
-										)),
+                Commands.deadline(
+                        Commands.waitSeconds(7),
+                        m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+                        m_indexerSubsystem.run(),
+                        m_intakeRollerSubsystem.intake(),
+                        m_shooterSubsystem.aimAndShootIgnoreCheck(
+                                () -> m_swerveSubsystem.getDistanceToTarget(true))),
                 Commands.deadline(
                         m_autoFactory.trajectoryCmd("IntakeDepot"),
-												m_shooterSubsystem.stopShooting(),
+                        m_shooterSubsystem.stopShooting(),
                         m_linearIntakeSubsystem.extend()),
                 Commands.waitSeconds(1),
                 Commands.deadline(
                         m_autoFactory.trajectoryCmd("ExitDepot"),
                         m_linearIntakeSubsystem.retract()
                                 .andThen(Commands.parallel(
-																		m_intakeRollerSubsystem.stop(),
-																		m_indexerSubsystem.stop())
-                        )),
-						Commands.parallel(
-								m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
-								m_indexerSubsystem.run(),
-								m_intakeRollerSubsystem.intake(),
-								m_shooterSubsystem.aimAndShootIgnoreCheck(
-										() -> m_swerveSubsystem.getDistanceToTarget(true))
-						));
+                                        m_intakeRollerSubsystem.stop(),
+                                        m_indexerSubsystem.stop()))),
+                Commands.parallel(
+                        m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+                        m_indexerSubsystem.run(),
+                        m_intakeRollerSubsystem.intake(),
+                        m_shooterSubsystem.aimAndShootIgnoreCheck(
+                                () -> m_swerveSubsystem.getDistanceToTarget(true))));
     }
 }
