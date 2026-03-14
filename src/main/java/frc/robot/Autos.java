@@ -160,24 +160,33 @@ public class Autos {
         return Commands.sequence(
                 m_autoFactory.resetOdometry("ToDepot"),
                 m_autoFactory.trajectoryCmd("ToDepot"),
+								Commands.deadline(
+										Commands.waitSeconds(7),
+										m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+										m_indexerSubsystem.run(),
+										m_intakeRollerSubsystem.intake(),
+										m_shooterSubsystem.aimAndShootIgnoreCheck(
+												() -> m_swerveSubsystem.getDistanceToTarget(true)
+										)),
                 Commands.deadline(
                         m_autoFactory.trajectoryCmd("IntakeDepot"),
                         m_swerveSubsystem.stop(),
-                        m_linearIntakeSubsystem.extend(),
-                        m_intakeRollerSubsystem.intake(),
-                        m_indexerSubsystem.run()),
+												m_shooterSubsystem.stopShooting(),
+                        m_linearIntakeSubsystem.extend()),
                 Commands.waitSeconds(1),
                 Commands.deadline(
                         m_autoFactory.trajectoryCmd("ExitDepot"),
                         m_linearIntakeSubsystem.retract()
-                                .andThen(m_intakeRollerSubsystem.stop()),
-                        m_indexerSubsystem.stop()),
+                                .andThen(Commands.parallel(
+																		m_intakeRollerSubsystem.stop(),
+																		m_indexerSubsystem.stop())
+                        )),
 						Commands.parallel(
 								m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
 								m_indexerSubsystem.run(),
 								m_intakeRollerSubsystem.intake(),
 								m_shooterSubsystem.aimAndShootIgnoreCheck(
-										() -> m_swerveSubsystem.getDistanceToTarget(true)
-										)));
+										() -> m_swerveSubsystem.getDistanceToTarget(true))
+						));
     }
 }
