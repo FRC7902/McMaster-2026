@@ -215,4 +215,33 @@ public class Autos {
 									() -> m_swerveSubsystem.getDistanceToTarget(true)
 							)));
 		}
+		public Command neutralAuto(){
+			return Commands.sequence(
+					Commands.parallel(
+							m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+							m_shooterSubsystem.aimAndShootIgnoreCheck(
+									() -> m_swerveSubsystem.getDistanceToTarget(true)
+							)),
+					m_autoFactory.resetOdometry("RightAuto_1"),
+					m_autoFactory.trajectoryCmd("RightAuto_1"),
+					Commands.deadline(
+							m_autoFactory.trajectoryCmd("RightAuto_2"),
+							m_linearIntakeSubsystem.extend(),
+							m_intakeRollerSubsystem.intake(),
+							m_indexerSubsystem.run()
+					),
+					Commands.deadline(
+							m_autoFactory.trajectoryCmd("Neutral1"),
+							m_linearIntakeSubsystem.retract()
+									.andThen(m_intakeRollerSubsystem.stop()),
+							m_indexerSubsystem.stop()
+					),
+					Commands.parallel(
+							m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+							m_shooterSubsystem.aimAndShootIgnoreCheck(
+									() -> m_swerveSubsystem.getDistanceToTarget(true)
+							))
+					
+			);
+		}
 }
