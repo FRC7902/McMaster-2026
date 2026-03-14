@@ -94,13 +94,6 @@
      "exp":"12.528",
      "val":12.528
     }
-   },
-   "trenchTopY":{
-    "dimension":"Number",
-    "var":{
-     "exp":"7.44",
-     "val":7.44
-    }
    }
   },
   "poses":{}
@@ -175,9 +168,9 @@
  },
  "generationFeatures":[],
  "codegen":{
-  "root":"../../choreo_code_gen",
-  "genVars":true,
-  "genTrajData":true,
-  "useChoreoLib":true
+  "root":"../../java/frc/robot",
+  "genVars":false,
+  "genTrajData":false,
+  "useChoreoLib":false
  }
 }

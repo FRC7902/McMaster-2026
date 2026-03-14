@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.HopperSubsystem;
@@ -29,6 +30,8 @@ public class Autos {
     private final DoubleSupplier m_autoAimHeadingX;
     private final DoubleSupplier m_autoAimHeadingY;
 
+		public final Command stationaryAutoAimCmd;
+
     public Autos(
             AutoFactory autoFactory,
             IntakeRollerSubsystem intakeRollerSubsystem,
@@ -49,22 +52,21 @@ public class Autos {
 
         this.m_autoAimHeadingX = autoAimHeadingX;
         this.m_autoAimHeadingY = autoAimHeadingY;
+
+			SwerveInputStream stationaryAutoAim = SwerveInputStream.of(m_swerveSubsystem.getSwerveDrive(),
+							() -> 0.0,
+							() -> 0.0)
+					.deadband(OperatorConstants.DEADBAND)
+					.scaleTranslation(1.0)
+					.allianceRelativeControl(true)
+					.withControllerHeadingAxis(m_autoAimHeadingX, m_autoAimHeadingY)
+					.headingWhile(true)
+					.scaleTranslation(SwerveConstants.AUTO_AIM_SCALE_TRANSLATION);
+
+			stationaryAutoAimCmd = m_swerveSubsystem.driveFieldOriented(stationaryAutoAim);
     }
 
     public Command rightAuto() {
-
-        SwerveInputStream stationaryAutoAim = SwerveInputStream.of(m_swerveSubsystem.getSwerveDrive(),
-                () -> 0.0,
-                () -> 0.0)
-                .deadband(OperatorConstants.DEADBAND)
-                .scaleTranslation(1.0)
-                .allianceRelativeControl(true)
-                .withControllerHeadingAxis(m_autoAimHeadingX, m_autoAimHeadingY)
-                .headingWhile(true)
-                .scaleTranslation(SwerveConstants.AUTO_AIM_SCALE_TRANSLATION);
-
-        Command stationaryAutoAimCmd = m_swerveSubsystem.driveFieldOriented(stationaryAutoAim);
-
         SwerveInputStream driveBackWithAutoAim = SwerveInputStream.of(m_swerveSubsystem.getSwerveDrive(),
                 () -> -0.4,
                 () -> 0.17)
@@ -154,4 +156,29 @@ public class Autos {
                                 () -> m_swerveSubsystem.getDistanceToTarget(true),
                                 m_swerveSubsystem::isAutoAimOnTarget)));
     }
+		public Command depotIntakeAuto(){
+
+			return Commands.sequence(
+					m_autoFactory.resetOdometry("ToDepot"),
+					m_autoFactory.trajectoryCmd("ToDepot"),
+					Commands.deadline(
+							m_autoFactory.trajectoryCmd("IntakeDepot"),
+							m_swerveSubsystem.stop(),
+							m_linearIntakeSubsystem.extend(),
+							m_intakeRollerSubsystem.intake(),
+							m_indexerSubsystem.run()
+					),
+					Commands.waitSeconds(1),
+					Commands.deadline(
+							m_autoFactory.trajectoryCmd("ExitDepot"),
+							m_linearIntakeSubsystem.retract()
+									.andThen(m_intakeRollerSubsystem.stop()),
+							m_indexerSubsystem.stop()
+					),
+					Commands.parallel(
+							m_indexerSubsystem.run(),
+							stationaryAutoAimCmd
+					)
+			);
+		}
 }
