@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Robot;
 import frc.robot.Constants;
 import frc.robot.Constants.HoodConstants.FlywheelSpeedZone;
@@ -80,6 +81,19 @@ public class ShooterSubsystem extends SubsystemBase {
                         () -> isAutoAimReady.get() && isShooterReady()).repeatedly())
                 .withName("SHTR - Aim and Shoot");
     }
+
+    public Command aimAndShootIgnoreCheck(Supplier<Distance> getDistanceToTarget) {
+        return Commands.parallel(
+                m_hoodSubsystem.setAngle(() -> {
+                    Distance distance = getDistanceToTarget.get();
+                    FlywheelSpeedZone zone = m_hoodSubsystem.getSpeedZone(distance);
+                    return m_hoodSubsystem.getAngleToTarget(distance, zone);
+                }),
+                m_flywheelSubsystem.setSpeed(() -> m_flywheelSubsystem.getTargetVelocity(getDistanceToTarget.get())),
+                new WaitCommand(2),
+                m_feederSubsystem.feed())
+                .withName("SHTR - Aim and Shoot");
+    }
     // TODO: What if we get pushed while we're auto-aiming? This may 'cause
     // isAutoAimReady to never be true. Maybe lock swerve pose?
 
@@ -129,8 +143,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return Commands.parallel(
                 m_hoodSubsystem.lowerHood(),
                 stopFeeder ? m_feederSubsystem.stop() : Commands.none(),
-                stopFlywheel ? m_flywheelSubsystem.stop() : m_flywheelSubsystem.setDefaultRPM()
-                )
+                stopFlywheel ? m_flywheelSubsystem.stop() : m_flywheelSubsystem.setDefaultRPM())
                 .withName("SHTR - Stop Shooting");
     }
 
