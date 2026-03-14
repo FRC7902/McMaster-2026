@@ -90,9 +90,10 @@ public class ShooterSubsystem extends SubsystemBase {
                     return m_hoodSubsystem.getAngleToTarget(distance, zone);
                 }),
                 m_flywheelSubsystem.setSpeed(() -> m_flywheelSubsystem.getTargetVelocity(getDistanceToTarget.get())),
-                new WaitCommand(2),
-                m_feederSubsystem.feed())
-                .withName("SHTR - Aim and Shoot");
+                new WaitCommand(2).andThen(
+										m_feederSubsystem.feed())
+								).withName("SHTR - Aim and Shoot");
+
     }
     // TODO: What if we get pushed while we're auto-aiming? This may 'cause
     // isAutoAimReady to never be true. Maybe lock swerve pose?

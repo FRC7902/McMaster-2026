@@ -30,7 +30,7 @@ public class Autos {
     private final DoubleSupplier m_autoAimHeadingX;
     private final DoubleSupplier m_autoAimHeadingY;
 
-    public final Command stationaryAutoAimCmd;
+    public final SwerveInputStream stationaryAutoAim;
 
     public Autos(
             AutoFactory autoFactory,
@@ -53,7 +53,7 @@ public class Autos {
         this.m_autoAimHeadingX = autoAimHeadingX;
         this.m_autoAimHeadingY = autoAimHeadingY;
 
-        SwerveInputStream stationaryAutoAim = SwerveInputStream.of(m_swerveSubsystem.getSwerveDrive(),
+        stationaryAutoAim = SwerveInputStream.of(m_swerveSubsystem.getSwerveDrive(),
                 () -> 0.0,
                 () -> 0.0)
                 .deadband(OperatorConstants.DEADBAND)
@@ -62,8 +62,6 @@ public class Autos {
                 .withControllerHeadingAxis(m_autoAimHeadingX, m_autoAimHeadingY)
                 .headingWhile(true)
                 .scaleTranslation(SwerveConstants.AUTO_AIM_SCALE_TRANSLATION);
-
-        stationaryAutoAimCmd = m_swerveSubsystem.driveFieldOriented(stationaryAutoAim);
     }
 
     public Command rightAuto() {
@@ -97,7 +95,7 @@ public class Autos {
                         Commands.waitSeconds(2),
                         m_swerveSubsystem.stop(),
                         m_indexerSubsystem.run(),
-                        stationaryAutoAimCmd,
+										m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
                         m_shooterSubsystem.aimAndShoot(
                                 () -> m_swerveSubsystem.getDistanceToTarget(true),
                                 m_swerveSubsystem::isAutoAimOnTarget)),
@@ -108,7 +106,7 @@ public class Autos {
                         m_indexerSubsystem.run(),
                         m_hopperSubsystem.retract(),
                         m_linearIntakeSubsystem.fullyRetract(),
-                        stationaryAutoAimCmd,
+										m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
                         m_shooterSubsystem.aimAndShoot(
                                 () -> m_swerveSubsystem.getDistanceToTarget(true),
                                 m_swerveSubsystem::isAutoAimOnTarget)),
@@ -150,12 +148,11 @@ public class Autos {
                 Commands.waitSeconds(3),
                 m_swerveSubsystem.stop(),
                 Commands.parallel(
-                        stationaryAutoAimCmd,
+										m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
                         m_indexerSubsystem.run(),
                         m_intakeRollerSubsystem.intake(),
-                        m_shooterSubsystem.aimAndShoot(
-                                () -> m_swerveSubsystem.getDistanceToTarget(true),
-                                m_swerveSubsystem::isAutoAimOnTarget)));
+                        m_shooterSubsystem.aimAndShootIgnoreCheck(
+                                () -> m_swerveSubsystem.getDistanceToTarget(true))));
     }
 
     public Command depotIntakeAuto() {
@@ -175,8 +172,12 @@ public class Autos {
                         m_linearIntakeSubsystem.retract()
                                 .andThen(m_intakeRollerSubsystem.stop()),
                         m_indexerSubsystem.stop()),
-                Commands.parallel(
-                        m_indexerSubsystem.run(),
-                        stationaryAutoAimCmd));
+						Commands.parallel(
+								m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+								m_indexerSubsystem.run(),
+								m_intakeRollerSubsystem.intake(),
+								m_shooterSubsystem.aimAndShootIgnoreCheck(
+										() -> m_swerveSubsystem.getDistanceToTarget(true)
+										)));
     }
 }
