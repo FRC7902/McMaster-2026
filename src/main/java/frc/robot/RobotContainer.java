@@ -269,6 +269,7 @@ public class RobotContainer {
                 !DriverStation.isAutonomous();
 
         new Trigger(isIdle)
+                .and(new Trigger(m_swerveSubsystem::isAutoAimOnTarget))
                 .whileTrue(
                         new SequentialCommandGroup(
                                 new WaitCommand(0.01),
