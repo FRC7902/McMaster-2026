@@ -279,23 +279,33 @@ public class Autos {
         // () -> m_swerveSubsystem.getDistanceToTarget(true))));
         // }
 
+        public Command sweep(){
+                return Commands.sequence(
+                        m_autoFactory.resetOdometry("LeftAuto_1"),
+                        m_autoFactory.trajectoryCmd("LeftAuto_1"),
+                        m_autoFactory.trajectoryCmd("sweep")
+                );
+        }
+
         public Command neutralAutoLeft() {
                 return Commands.sequence(
+                                m_autoFactory.resetOdometry("LeftAuto_1"),
                                 m_autoFactory.trajectoryCmd("LeftAuto_1"),
-                                Commands.deadline(
-                                                m_autoFactory.trajectoryCmd("LeftAuto_2"),
-                                                m_linearIntakeSubsystem.extend(),
-                                                m_intakeRollerSubsystem.intake(),
-                                                m_indexerSubsystem.run(),
-                                                new InstantCommand(() -> SignalLogger.start()))
+                                Commands.sequence(
+                                                m_linearIntakeSubsystem.extend().andThen(
+                                                        Commands.parallel(
+                                                                m_intakeRollerSubsystem.intake(),
+                                                                 m_indexerSubsystem.run()
+                                                        )),
+                                                 m_autoFactory.trajectoryCmd("LeftAuto_2")
+                                                 )
                                                 .withTimeout(5),
-                                Commands.deadline(
-                                                m_autoFactory.trajectoryCmd("Neutral2"),
-                                                new InstantCommand(() -> SignalLogger.stop()),
-                                                m_linearIntakeSubsystem.retract()
-                                                                .andThen(Commands.parallel(
-                                                                                m_intakeRollerSubsystem.stop(),
-                                                                                m_indexerSubsystem.stop())))
+                                Commands.sequence(
+                                                m_linearIntakeSubsystem.retract().andThen(
+                                                        Commands.parallel(
+                                                                m_intakeRollerSubsystem.stop(),
+                                                                m_indexerSubsystem.stop())),
+                                                 m_autoFactory.trajectoryCmd("Neutral2"))
                                                 .withTimeout(5)
                                                 .handleInterrupt(() -> Commands.none()),
                                 Commands.parallel(
