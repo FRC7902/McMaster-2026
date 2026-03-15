@@ -8,7 +8,10 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import java.io.File;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -25,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -257,6 +262,17 @@ public class RobotContainer {
 
     private void configureBindings() {
         m_swerveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocity);
+
+        BooleanSupplier isIdle = () -> Math.abs(m_driverController.getLeftX()) < OperatorConstants.DEADBAND &&
+                Math.abs(m_driverController.getLeftY()) < OperatorConstants.DEADBAND &&
+                Math.abs(m_driverController.getRightX()) < OperatorConstants.DEADBAND &&
+                !DriverStation.isAutonomous();
+
+        new Trigger(isIdle)
+                .whileTrue(
+                        new SequentialCommandGroup(
+                                new WaitCommand(0.01),
+                                new InstantCommand(m_swerveSubsystem::lock)));
 
         m_driverController.options().onTrue((Commands.runOnce(m_swerveSubsystem::zeroGyroWithAlliance)));
         m_driverController.create().whileTrue(m_swerveSubsystem.centerModulesCommand());
