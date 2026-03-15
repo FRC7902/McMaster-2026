@@ -268,12 +268,7 @@ public class RobotContainer {
                 Math.abs(m_driverController.getRightX()) < OperatorConstants.DEADBAND &&
                 !DriverStation.isAutonomous();
 
-        new Trigger(isIdle)
-                .and(new Trigger(m_swerveSubsystem::isAutoAimOnTarget))
-                .whileTrue(
-                        new SequentialCommandGroup(
-                                new WaitCommand(0.01),
-                                new InstantCommand(m_swerveSubsystem::lock)));
+        Trigger isIdleTrigger = new Trigger(isIdle);
 
         m_driverController.options().onTrue((Commands.runOnce(m_swerveSubsystem::zeroGyroWithAlliance)));
         m_driverController.create().whileTrue(m_swerveSubsystem.centerModulesCommand());
@@ -298,7 +293,25 @@ public class RobotContainer {
                                 1.0).scaleRotation(1.0)));
 
         // Auto-aim (swerve heading with calculated hood angle) and shoot
-        m_driverController.R2().whileTrue(driveFieldOrientedAutoAim);
+        m_driverController.R2()
+                .and(isIdleTrigger.negate())
+                .and(new Trigger(m_swerveSubsystem::isAutoAimOnTarget))
+                .whileTrue(driveFieldOrientedAutoAim);
+        m_driverController.R2()
+                .and(isIdleTrigger)
+                .and(new Trigger(m_swerveSubsystem::isAutoAimOnTarget).negate())
+                .whileTrue(driveFieldOrientedAutoAim);
+        m_driverController.R2()
+                .and(isIdleTrigger.negate())
+                .and(new Trigger(m_swerveSubsystem::isAutoAimOnTarget).negate())
+                .whileTrue(driveFieldOrientedAutoAim);
+        m_driverController.R2()
+                .and(isIdleTrigger)
+                .and(new Trigger(m_swerveSubsystem::isAutoAimOnTarget))
+                .whileTrue(
+                        Commands.sequence(
+                                Commands.waitSeconds(0.01),
+                                new InstantCommand(m_swerveSubsystem::lock)));
         m_driverController.R2()
                 .and(isControllingDriveTrigger)
                 .onTrue(m_shooterSubsystem.aimAndShoot(
