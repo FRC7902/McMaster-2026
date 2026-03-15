@@ -2,9 +2,12 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.SignalLogger;
+
 import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
@@ -156,7 +159,6 @@ public class Autos {
     }
 
     public Command depotIntakeAuto() {
-
         return Commands.sequence(
                 m_autoFactory.resetOdometry("ToDepot"),
                 m_autoFactory.trajectoryCmd("ToDepot"),
@@ -237,6 +239,32 @@ public class Autos {
         );
     }
 
+    public Command preLoadAndSweep() {
+        return Commands.sequence(
+                m_autoFactory.resetOdometry("LeftPreload"),
+                Commands.deadline(
+                        Commands.waitSeconds(5),
+                        m_shooterSubsystem.aimAndShootIgnoreCheck(
+                                () -> m_swerveSubsystem.getDistanceToTarget(true))),
+                neutralAutoLeft());
+    }
+
+    // public Command neutralTest() {
+    //     return Commands.sequence(
+    //             m_autoFactory.resetOdometry("LeftAuto_1"),
+    //             m_autoFactory.trajectoryCmd("LeftAuto_1"),
+    //             Commands.deadline(
+    //                     m_autoFactory.trajectoryCmd("LeftAuto_2"),
+    //                     new InstantCommand(() -> SignalLogger.start())),
+    //             Commands.deadline(
+    //                     m_autoFactory.trajectoryCmd("Neutral2"),
+    //                     new InstantCommand(() -> SignalLogger.stop())),
+    //             Commands.parallel(
+    //                     m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+    //                     m_shooterSubsystem.aimAndShootIgnoreCheck(
+    //                             () -> m_swerveSubsystem.getDistanceToTarget(true))));
+    // }
+
     public Command neutralAutoLeft() {
         return Commands.sequence(
                 m_autoFactory.resetOdometry("LeftAuto_1"),
@@ -245,15 +273,19 @@ public class Autos {
                         m_autoFactory.trajectoryCmd("LeftAuto_2"),
                         m_linearIntakeSubsystem.extend(),
                         m_intakeRollerSubsystem.intake(),
-                        m_indexerSubsystem.run()),
+                        m_indexerSubsystem.run(),
+                        new InstantCommand(() -> SignalLogger.start()))
+                        .withTimeout(5),
                 Commands.deadline(
                         m_autoFactory.trajectoryCmd("Neutral2"),
+                        new InstantCommand(() -> SignalLogger.stop()),
                         m_linearIntakeSubsystem.retract()
                                 .andThen(Commands.parallel(
                                         m_intakeRollerSubsystem.stop(),
-                                        m_indexerSubsystem.stop()))),
-                Commands.deadline(
-                        Commands.waitSeconds(10),
+                                        m_indexerSubsystem.stop())))
+                        .withTimeout(5)
+                        .handleInterrupt(() -> Commands.none()),
+                Commands.parallel(
                         m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
                         m_intakeRollerSubsystem.intake(),
                         m_indexerSubsystem.run(),
