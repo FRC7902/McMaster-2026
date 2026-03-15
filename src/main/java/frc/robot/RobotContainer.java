@@ -168,7 +168,6 @@ public class RobotContainer {
         autoChooser.addCmd("Center Shoot Preload Auto", m_autos::shootPreloadAuto);
         autoChooser.addCmd("Depot", m_autos::depotIntakeAuto);
         autoChooser.addCmd("DepotOnly", m_autos::depotOnlyAuto);
-	    autoChooser.addCmd("NeutralLeft", m_autos::neutralAutoLeft);
         autoChooser.addCmd("LeftPreLoadNeutral", m_autos::preLoadAndSweep);
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
