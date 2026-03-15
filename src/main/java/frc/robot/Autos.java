@@ -244,6 +244,7 @@ public class Autos {
                 m_autoFactory.resetOdometry("LeftPreload"),
                 Commands.deadline(
                         Commands.waitSeconds(5),
+                        m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
                         m_shooterSubsystem.aimAndShootIgnoreCheck(
                                 () -> m_swerveSubsystem.getDistanceToTarget(true))),
                 neutralAutoLeft());
