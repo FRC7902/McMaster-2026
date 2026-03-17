@@ -90,7 +90,7 @@ public class Autos {
                 m_autoFactory.trajectoryCmd("RightAuto_3"),
                 Commands.deadline(
                         m_autoFactory.trajectoryCmd("TrenchRightToAlliance"),
-                        m_linearIntakeSubsystem.retract()),
+                        m_linearIntakeSubsystem.midpoint()),
                 Commands.deadline(
                         Commands.waitSeconds(2),
                         m_swerveSubsystem.stop(),
@@ -105,7 +105,7 @@ public class Autos {
                         Commands.waitSeconds(1),
                         m_indexerSubsystem.run(),
                         m_hopperSubsystem.retract(),
-                        m_linearIntakeSubsystem.fullyRetract(),
+                        m_linearIntakeSubsystem.retract(),
                         m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
                         m_shooterSubsystem.aimAndShoot(
                                 () -> m_swerveSubsystem.getDistanceToTarget(true),
@@ -120,7 +120,7 @@ public class Autos {
                         m_linearIntakeSubsystem.extend()),
                 Commands.deadline(
                         m_autoFactory.trajectoryCmd("TrenchRightToAlliance"),
-                        m_linearIntakeSubsystem.retract()),
+                        m_linearIntakeSubsystem.midpoint()),
                 Commands.deadline(
                         Commands.waitSeconds(3),
                         driveBackWithAutoAimCmd,
@@ -176,7 +176,7 @@ public class Autos {
                 Commands.deadline(
                         Commands.waitSeconds(2.5),
                         m_autoFactory.trajectoryCmd("ExitDepot"),
-                        m_linearIntakeSubsystem.retract()
+                        m_linearIntakeSubsystem.midpoint()
                                 .andThen(Commands.parallel(
                                         m_intakeRollerSubsystem.stop(),
                                         m_indexerSubsystem.stop()))),
@@ -202,7 +202,7 @@ public class Autos {
                 Commands.deadline(
                         Commands.waitSeconds(2.5),
                         m_autoFactory.trajectoryCmd("ExitDepot"),
-                        m_linearIntakeSubsystem.retract()
+                        m_linearIntakeSubsystem.midpoint()
                                 .andThen(m_intakeRollerSubsystem.stop()),
                         m_indexerSubsystem.stop()),
                 Commands.parallel(
@@ -224,7 +224,7 @@ public class Autos {
                         m_indexerSubsystem.run()),
                 Commands.deadline(
                         m_autoFactory.trajectoryCmd("Neutral1"),
-                        m_linearIntakeSubsystem.retract()
+                        m_linearIntakeSubsystem.midpoint()
                                 .andThen(Commands.parallel(
                                         m_intakeRollerSubsystem.stop(),
                                         m_indexerSubsystem.stop()))),

@@ -278,7 +278,7 @@ public class RobotContainer {
         m_driverController.R2()
                 .onTrue(m_linearIntakeSubsystem.shuffle()
                         .unless(m_driverController.L2()::getAsBoolean))
-                .onFalse(m_linearIntakeSubsystem.retract()
+                .onFalse(m_linearIntakeSubsystem.midpoint()
                         .unless(m_driverController.L2()::getAsBoolean));
 
         if (Robot.isSimulation()) {
@@ -331,7 +331,7 @@ public class RobotContainer {
         m_driverController.R1()
                 .onTrue(m_linearIntakeSubsystem.shuffle()
                         .unless(m_driverController.L2()::getAsBoolean))
-                .onFalse(m_linearIntakeSubsystem.retract()
+                .onFalse(m_linearIntakeSubsystem.midpoint()
                         .unless(m_driverController.L2()::getAsBoolean));
 
         // Extend intake, expand hopper, and run intake rollers
@@ -339,7 +339,7 @@ public class RobotContainer {
                 .onTrue(Commands.parallel(
                         m_linearIntakeSubsystem.extend(),
                         m_intakeRollerSubsystem.intake()))
-                .onFalse(m_linearIntakeSubsystem.retract().andThen(m_intakeRollerSubsystem.stop()));
+                .onFalse(m_linearIntakeSubsystem.midpoint().andThen(m_intakeRollerSubsystem.stop()));
         m_driverController.L2()
                 .onTrue(m_hopperSubsystem.expand());
         m_driverController.L2()
@@ -366,7 +366,7 @@ public class RobotContainer {
                 // Retract intake, then stop indexer and intake rollers
                 .onFalse(
                         Commands.sequence(
-                                m_linearIntakeSubsystem.retract(),
+                                m_linearIntakeSubsystem.midpoint(),
                                 Commands.parallel(
                                         m_indexerSubsystem.stop(),
                                         m_intakeRollerSubsystem.stop())));
@@ -470,7 +470,7 @@ public class RobotContainer {
                 m_indexerSubsystem.stop(),
                 m_hopperSubsystem.retract(),
                 m_intakeRollerSubsystem.stop(),
-                m_linearIntakeSubsystem.retract());
+                m_linearIntakeSubsystem.midpoint());
     }
 
     public void zeroGyroWithAlliance() {
