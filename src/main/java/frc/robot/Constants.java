@@ -55,6 +55,8 @@ public final class Constants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
 
     public static final class SwerveConstants {
+        // width of alliance zone (from edge of field to solid line)
+        public static final Distance ALLIANCE_ZONE_WIDTH = Meters.of(4.611234664916992);
         public static final double MAX_SPEED = Units.feetToMeters(16); // TODO: Try increasing this to see if it
                                                                        // does
                                                                        // anything
@@ -95,6 +97,12 @@ public final class Constants {
         public static final double DRIVE_TO_POSE_ROTATION_kD = 0;
         public static final double DRIVE_TO_POSE_ROTATION_MAX_VELOCITY_RAD = Units.degreesToRadians(360);
         public static final double DRIVE_TO_POSE_ROTATION_MAX_ACCELERATION_RAD = Units.degreesToRadians(180);
+
+        public static final InterpolatingDoubleTreeMap distanceToScaleTranslation = InterpolatingDoubleTreeMap
+                .ofEntries(
+                        Map.entry(Meters.of(1).in(Meters), 0.5),
+                        Map.entry(Meters.of(2).in(Meters), 0.8),
+                        Map.entry(Meters.of(3).in(Meters), 1.0));
     }
 
     public static final class OperatorConstants {

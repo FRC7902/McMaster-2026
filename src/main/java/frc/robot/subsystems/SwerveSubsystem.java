@@ -751,6 +751,13 @@ public class SwerveSubsystem extends SubsystemBase {
         return autoAimTargetRotation;
     }
 
+    /*
+     * Returns the scale translation for swerve auto aim
+     */
+    public Supplier<Double> getAutoAimScaleTranslation(Distance distanceFromHub) {
+        return () -> SwerveConstants.distanceToScaleTranslation.get(distanceFromHub.in(Meters));
+    }
+
     public void setSelectedClimbPose(boolean isLeft) {
         if (isRedAlliance()) {
             m_selectedClimbPose = isLeft ? SwerveConstants.RED_LEFT_TOWER_CLIMB_POS
@@ -778,5 +785,6 @@ public class SwerveSubsystem extends SubsystemBase {
     public void simulationPeriodic() {
         SmartDashboard.putBoolean("isAutoAimReady", isAutoAimOnTarget());
         SmartDashboard.putString("currentZone", getCurrentZone().toString());
+        SmartDashboard.putNumber("Auto aim scale translation", getAutoAimScaleTranslation(getDistanceToTarget()).get());
     }
 }
