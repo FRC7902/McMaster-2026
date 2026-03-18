@@ -172,11 +172,11 @@ public class LinearIntakeSubsystem extends SubsystemBase {
         return setPosition(LinearIntakeConstants.EXTENDED_POSITION);
     }
 
-    public Command retract() {
+    public Command midpoint() {
         return setPosition(LinearIntakeConstants.MIDPOINT_POSITION);
     }
 
-    public Command fullyRetract() {
+    public Command retract() {
         return setPosition(LinearIntakeConstants.RETRACTED_POSITION);
     }
 
@@ -188,8 +188,8 @@ public class LinearIntakeSubsystem extends SubsystemBase {
                 setPosition(LinearIntakeConstants.SHUFFLE_FAR_POSITION).withTimeout(0.5),
                 setPosition(LinearIntakeConstants.SHUFFLE_CLOSE_POSITION).withTimeout(0.5),
                 Commands.sequence(
-                        retract().withTimeout(0.5),
-                        fullyRetract().withTimeout(0.5))
+                        midpoint().withTimeout(0.5),
+                        retract().withTimeout(0.5))
                         .repeatedly());
     }
 

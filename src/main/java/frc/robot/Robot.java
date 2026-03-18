@@ -38,14 +38,17 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        // Check the linear intake position and set the encoder position accordingly
-        m_robotContainer.calibrateLinearIntakePosition();
-
         // Zero gyro (shooter must face away from driver, towards opponent wall)
         m_robotContainer.zeroGyroWithAlliance();
 
+        // Check the linear intake position and set the encoder position accordingly
+        m_robotContainer.calibrateLinearIntakePosition();
+
         // Start the flywheel at the default RPM when teleop starts
-        CommandScheduler.getInstance().schedule(m_robotContainer.startFlywheelDefaultRPM());
+        CommandScheduler.getInstance().schedule(m_robotContainer.m_shooterSubsystem.startFlywheelDefaultRPM());
+
+        // Extend the intake to lower the hopper enough to go underneath the trench
+        CommandScheduler.getInstance().schedule(m_robotContainer.m_linearIntakeSubsystem.midpoint());
     }
 
     @Override
@@ -63,14 +66,17 @@ public class Robot extends TimedRobot {
             m_autonomousCommand.cancel();
         }
 
+        // Check the linear intake position and set the encoder position accordingly
+        m_robotContainer.calibrateLinearIntakePosition();
+
         CommandScheduler.getInstance().schedule(m_robotContainer.stopAllSubsystems());
         m_robotContainer.driveAngularVelocity.driveToPoseEnabled(false);
 
         // Start the flywheel at the default RPM when teleop starts
-        CommandScheduler.getInstance().schedule(m_robotContainer.startFlywheelDefaultRPM());
+        CommandScheduler.getInstance().schedule(m_robotContainer.m_shooterSubsystem.startFlywheelDefaultRPM());
 
-        // Check the linear intake position and set the encoder position accordingly
-        m_robotContainer.calibrateLinearIntakePosition();
+        // Extend the intake to lower the hopper enough to go underneath the trench
+        CommandScheduler.getInstance().schedule(m_robotContainer.m_linearIntakeSubsystem.midpoint());
     }
 
     @Override
