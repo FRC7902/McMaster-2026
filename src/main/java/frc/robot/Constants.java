@@ -509,6 +509,22 @@ public final class Constants {
         public static final Matrix<N3, N1> MT2_STDDEV = VecBuilder.fill(0.5, 0.5, 1e6);
     }
 
+    public static final class MatchConstants {
+        public static final double TRANSITION_SHIFT = 10;
+        public static final double SHIFT_1 = 25;
+        public static final double SHIFT_2 = 25;
+        public static final double SHIFT_3 = 25;
+        public static final double SHIFT_4 = 25;
+        public static final double END_GAME = 30;
+
+        public static final double MATCH_TIME_TRANSITION_SHIFT = 10;
+        public static final double MATCH_TIME_SHIFT_1 = 35;
+        public static final double MATCH_TIME_SHIFT_2 = 60;
+        public static final double MATCH_TIME_SHIFT_3 = 85;
+        public static final double MATCH_TIME_SHIFT_4 = 110;
+        public static final double MATCH_TIME_END_GAME = 140;
+    }
+
     // Consider setting to LOW or MEDIUM for competition to reduce network traffic
     // Set the telemetry verbosity for YAMS subsystems
     public static final SmartMotorControllerConfig.TelemetryVerbosity TELEMETRY_VERBOSITY = SmartMotorControllerConfig.TelemetryVerbosity.LOW;

@@ -33,6 +33,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -40,6 +42,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.Constants.MatchConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.FieldConstants;
@@ -765,6 +768,49 @@ public class SwerveSubsystem extends SubsystemBase {
         return m_selectedClimbPose;
     }
 
+    public enum Color {
+        RED,
+        BLUE,
+        BOTH
+    }
+
+    public void getAllianceShift() {
+        String colorInactive = DriverStation.getGameSpecificMessage().charAt(0) == 'R' ? "Red" : "Blue";
+        double timeLeft = 0;
+        double matchTime = Timer.getMatchTime();
+        Color color = Color.BOTH;
+        String colorCode = "#FFFFFF";
+        if (matchTime <= MatchConstants.MATCH_TIME_TRANSITION_SHIFT) {
+            timeLeft = MatchConstants.TRANSITION_SHIFT - matchTime;
+            color = colorInactive.equalsIgnoreCase("red") ? Color.BLUE : Color.RED;
+        } else if (matchTime > MatchConstants.MATCH_TIME_TRANSITION_SHIFT
+                && matchTime <= MatchConstants.MATCH_TIME_SHIFT_1) {
+            timeLeft = MatchConstants.SHIFT_1 - (matchTime - MatchConstants.TRANSITION_SHIFT);
+            color = colorInactive.equalsIgnoreCase("red") ? Color.RED : Color.BLUE;
+        } else if (matchTime > MatchConstants.MATCH_TIME_SHIFT_1 && matchTime <= MatchConstants.MATCH_TIME_SHIFT_2) {
+            timeLeft = MatchConstants.SHIFT_2 - (matchTime - MatchConstants.MATCH_TIME_SHIFT_1);
+            color = colorInactive.equalsIgnoreCase("red") ? Color.BLUE : Color.RED;
+        } else if (matchTime > MatchConstants.MATCH_TIME_SHIFT_2 && matchTime <= MatchConstants.MATCH_TIME_SHIFT_3) {
+            timeLeft = MatchConstants.SHIFT_3 - (matchTime - MatchConstants.MATCH_TIME_SHIFT_2);
+            color = colorInactive.equalsIgnoreCase("red") ? Color.RED : Color.BLUE;
+        } else if (matchTime > MatchConstants.MATCH_TIME_SHIFT_3 && matchTime <= MatchConstants.MATCH_TIME_SHIFT_4) {
+            timeLeft = MatchConstants.SHIFT_4 - (matchTime - MatchConstants.MATCH_TIME_SHIFT_3);
+            color = colorInactive.equalsIgnoreCase("red") ? Color.BLUE : Color.RED;
+        } else if (matchTime > MatchConstants.MATCH_TIME_SHIFT_4 && matchTime <= MatchConstants.MATCH_TIME_END_GAME) {
+            timeLeft = MatchConstants.END_GAME - (matchTime - MatchConstants.MATCH_TIME_SHIFT_4);
+            color = Color.BOTH;
+        }
+        if (color == Color.RED) {
+            colorCode = "#FF0000";
+        } else if (color == Color.BLUE) {
+            colorCode = "#0000FF";
+        } else if (color == Color.BOTH) {
+            colorCode = "#FFFFFF";
+        }
+        SmartDashboard.putNumber("Shift time", timeLeft);
+        SmartDashboard.putString("Alliance Shift Color", colorCode);
+    }
+
     @Override
     public void periodic() {
         if (Constants.TELEMETRY && !DriverStation.isFMSAttached()) {
@@ -772,11 +818,13 @@ public class SwerveSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("currentHeading", getHeading().getDegrees());
             SmartDashboard.putBoolean("isAutoAimReady", isAutoAimOnTarget());
         }
+        getAllianceShift();
     }
 
     @Override
     public void simulationPeriodic() {
         SmartDashboard.putBoolean("isAutoAimReady", isAutoAimOnTarget());
         SmartDashboard.putString("currentZone", getCurrentZone().toString());
+        getAllianceShift();
     }
 }
