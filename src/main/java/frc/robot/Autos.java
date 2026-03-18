@@ -178,7 +178,7 @@ public class Autos {
                 SwerveConstants.DRIVE_TO_POSE_ROTATION_MAX_ACCELERATION_RAD);
     }
 
-    public Command testAutonRoutine() {
+    public Command rightNeutralAuto() {
 
         // TODO: Add alliance flipping util
 
