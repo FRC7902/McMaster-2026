@@ -398,23 +398,6 @@ public class RobotContainer {
         // () -> driveAngularVelocity.driveToPoseEnabled(true),
         // () -> driveAngularVelocity.driveToPoseEnabled(false))));
 
-        m_driverController.povLeft().whileTrue(
-                Commands.sequence(
-                        new InstantCommand(
-                                () -> m_swerveSubsystem.resetOdometry(new Pose2d(4.0218614, 0.632, new Rotation2d(0)))),
-                        new InstantCommand(
-                                () -> driveAngularVelocity.driveToPoseEnabled(true)),
-                        new InstantCommand(
-                                () -> m_swerveSubsystem
-                                        .setDriveToWaypoint(new Pose2d(4.0218614, 0.632, new Rotation2d(0)))),
-                        Commands.waitSeconds(0.02),
-                        Commands.waitUntil(
-                                m_swerveSubsystem::isAtWaypoint),
-                        new InstantCommand(
-                                () -> m_swerveSubsystem.setDriveToWaypoint(new Pose2d(8.25805950164795,
-                                        1.3536882400512695, new Rotation2d(-1.3203533077139966))))))
-                .onFalse(new InstantCommand(() -> driveAngularVelocity.driveToPoseEnabled(false)));
-
         // Auto-traverse the trench through left side
         // m_driverController.L3().whileTrue(
         // new ConditionalCommand(
