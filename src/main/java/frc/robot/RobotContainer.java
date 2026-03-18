@@ -235,7 +235,7 @@ public class RobotContainer {
         Command driveFieldOrientedDirectAngle = m_swerveSubsystem.driveFieldOriented(driveDirectAngle);
         Command driveFieldOrientedAutoAim = m_swerveSubsystem.driveFieldOriented(driveAutoAim);
 
-        m_swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngle);
+        m_swerveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
         m_driverController.options().onTrue((Commands.runOnce(m_swerveSubsystem::zeroGyroWithAlliance)));
         m_driverController.create().whileTrue(m_swerveSubsystem.centerModulesCommand());
