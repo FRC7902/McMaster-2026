@@ -182,11 +182,14 @@ public class LinearIntakeSubsystem extends SubsystemBase {
 
     public Command shuffle() {
         return Commands.sequence(
-                setPosition(LinearIntakeConstants.SHUFFLE_FAR_POSITION),
-                setPosition(LinearIntakeConstants.SHUFFLE_CLOSE_POSITION),
+                Commands.waitSeconds(2),
+                setPosition(LinearIntakeConstants.SHUFFLE_FAR_POSITION).withTimeout(0.5),
+                setPosition(LinearIntakeConstants.SHUFFLE_CLOSE_POSITION).withTimeout(0.5),
+                setPosition(LinearIntakeConstants.SHUFFLE_FAR_POSITION).withTimeout(0.5),
+                setPosition(LinearIntakeConstants.SHUFFLE_CLOSE_POSITION).withTimeout(0.5),
                 Commands.sequence(
-                        retract(),
-                        fullyRetract())
+                        retract().withTimeout(0.5),
+                        fullyRetract().withTimeout(0.5))
                         .repeatedly());
     }
 
