@@ -178,6 +178,7 @@ public class RobotContainer {
 
         // Only do this for LL4, so we use heading readings from MT1 from 3G?
         m_limelightA.getSettings().withImuMode(ImuMode.ExternalImu).save();
+        m_limelightB.getSettings().withImuMode(ImuMode.ExternalImu).save();
 
         configureBindings();
     }
