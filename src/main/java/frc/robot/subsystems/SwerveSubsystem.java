@@ -752,13 +752,16 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void setSelectedClimbPose(boolean isLeft) {
-        if (isRedAlliance()) {
-            m_selectedClimbPose = isLeft ? SwerveConstants.RED_LEFT_TOWER_CLIMB_POS
-                    : SwerveConstants.RED_RIGHT_TOWER_CLIMB_POS;
-        } else {
-            m_selectedClimbPose = isLeft ? SwerveConstants.BLUE_LEFT_TOWER_CLIMB_POS
-                    : SwerveConstants.BLUE_RIGHT_TOWER_CLIMB_POS;
-        }
+        // if (isRedAlliance()) {
+        // m_selectedClimbPose = isLeft ? SwerveConstants.RED_LEFT_TOWER_CLIMB_POS
+        // : SwerveConstants.RED_RIGHT_TOWER_CLIMB_POS;
+        // } else {
+        // m_selectedClimbPose = isLeft ? SwerveConstants.BLUE_LEFT_TOWER_CLIMB_POS
+        // : SwerveConstants.BLUE_RIGHT_TOWER_CLIMB_POS;
+        // }
+
+        m_selectedClimbPose = new Pose2d(
+                FieldConstants.FIELD_LENGTH / 2, FieldConstants.FIELD_WIDTH / 2, new Rotation2d(0));
     }
 
     public Pose2d getSelectedClimbPose() {

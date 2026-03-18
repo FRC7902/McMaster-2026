@@ -373,7 +373,7 @@ public class RobotContainer {
                                         m_intakeRollerSubsystem.stop())));
 
         // PID-tuned auto-align for climbing start position
-        driveAngularVelocity.driveToPose(m_swerveSubsystem::getSelectedClimbPose,
+        driveAngularVelocity.driveToPose((m_swerveSubsystem::getSelectedClimbPose),
                 new ProfiledPIDController(
                         SwerveConstants.DRIVE_TO_POSE_TRANSLATION_kP,
                         SwerveConstants.DRIVE_TO_POSE_TRANSLATION_kI,
@@ -390,13 +390,13 @@ public class RobotContainer {
                                 SwerveConstants.DRIVE_TO_POSE_ROTATION_MAX_ACCELERATION_RAD)));
 
         // Auto-align to left side tower for climbing
-        // m_driverController.povLeft().whileTrue(
-        // Commands.sequence(
-        // new InstantCommand(
-        // () -> m_swerveSubsystem.setSelectedClimbPose(true)),
-        // Commands.runEnd(
-        // () -> driveAngularVelocity.driveToPoseEnabled(true),
-        // () -> driveAngularVelocity.driveToPoseEnabled(false))));
+        m_driverController.cross().whileTrue(
+                Commands.sequence(
+                        new InstantCommand(
+                                () -> m_swerveSubsystem.setSelectedClimbPose(true)),
+                        Commands.runEnd(
+                                () -> driveAngularVelocity.driveToPoseEnabled(true),
+                                () -> driveAngularVelocity.driveToPoseEnabled(false))));
 
         // Auto-align to right side tower for climbing
         // m_driverController.povRight().whileTrue(
