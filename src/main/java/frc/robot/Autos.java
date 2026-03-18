@@ -200,7 +200,7 @@ public class Autos {
                 // Drive back to trench
                 Commands.deadline(
                         driveToWaypoint(Position.NEUTRAL_RIGHT_3),
-                        m_linearIntakeSubsystem.retract().andThen(
+                        m_linearIntakeSubsystem.midpoint().andThen(
                                 Commands.parallel(
                                         m_intakeRollerSubsystem.stop(),
                                         m_indexerSubsystem.stop()))),

@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().schedule(m_robotContainer.m_shooterSubsystem.startFlywheelDefaultRPM());
 
         // Extend the intake to lower the hopper enough to go underneath the trench
-        CommandScheduler.getInstance().schedule(m_robotContainer.m_linearIntakeSubsystem.retract());
+        CommandScheduler.getInstance().schedule(m_robotContainer.m_linearIntakeSubsystem.midpoint());
     }
 
     @Override
@@ -76,7 +76,7 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().schedule(m_robotContainer.m_shooterSubsystem.startFlywheelDefaultRPM());
 
         // Extend the intake to lower the hopper enough to go underneath the trench
-        CommandScheduler.getInstance().schedule(m_robotContainer.m_linearIntakeSubsystem.retract());
+        CommandScheduler.getInstance().schedule(m_robotContainer.m_linearIntakeSubsystem.midpoint());
     }
 
     @Override
