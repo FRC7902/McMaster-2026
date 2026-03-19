@@ -75,14 +75,14 @@ public final class Constants {
                 6.05175);
 
         public static final Pose2d RED_LEFT_TOWER_CLIMB_POS = new Pose2d(15.105, 3.885,
-                new Rotation2d(Degree.of(180)));
+                new Rotation2d(Degree.of(0)));
         public static final Pose2d RED_RIGHT_TOWER_CLIMB_POS = new Pose2d(15.105, 4.764,
-                new Rotation2d(Degree.of(180)));
+                new Rotation2d(Degree.of(0)));
 
         public static final Pose2d BLUE_LEFT_TOWER_CLIMB_POS = new Pose2d(1.428, 4.175,
-                new Rotation2d(Degree.of(0)));
+                new Rotation2d(Degree.of(180)));
         public static final Pose2d BLUE_RIGHT_TOWER_CLIMB_POS = new Pose2d(1.428, 3.317,
-                new Rotation2d(Degree.of(0)));
+                new Rotation2d(Degree.of(180)));
 
         public static final double DRIVE_TO_POSE_TRANSLATION_kP = 2.3;
         public static final double DRIVE_TO_POSE_TRANSLATION_kI = 0;
