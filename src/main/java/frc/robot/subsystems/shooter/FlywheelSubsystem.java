@@ -114,7 +114,7 @@ public class FlywheelSubsystem extends SubsystemBase {
      */
     public Command sysId() {
         return m_flywheel.sysId(
-                Volts.of(12), Volts.of(1).per(Second), Second.of(20))
+                Volts.of(12), Volts.of(1).per(Second), Second.of(10))
                 .beforeStarting(
                         () -> SignalLogger.start())
                 .finallyDo(() -> SignalLogger.stop());
