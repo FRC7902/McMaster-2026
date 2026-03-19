@@ -57,11 +57,16 @@ public class Autos {
                     .publish();
 
             Position[] waypointSelection = {
-                    Position.STARTING_LINE_RIGHT,
-                    Position.NEUTRAL_RIGHT_1,
-                    Position.NEUTRAL_RIGHT_2,
-                    Position.NEUTRAL_RIGHT_3,
-                    Position.ALLIANCE_RIGHT_1
+                    Position.BLUE_STARTING_LINE_RIGHT,
+                    Position.BLUE_NEUTRAL_RIGHT_1,
+                    Position.BLUE_NEUTRAL_RIGHT_2,
+                    Position.BLUE_NEUTRAL_RIGHT_3,
+                    Position.BLUE_ALLIANCE_RIGHT_1,
+                    Position.RED_STARTING_LINE_LEFT,
+                    Position.RED_NEUTRAL_LEFT_1,
+                    Position.RED_NEUTRAL_LEFT_2,
+                    Position.RED_NEUTRAL_LEFT_3,
+                    Position.RED_ALLIANCE_LEFT_1
             };
 
             waypointPositions.accept(
@@ -183,30 +188,30 @@ public class Autos {
         // TODO: Add alliance flipping util
 
         return new SequentialCommandGroup(
-                resetOdometry(Position.STARTING_LINE_RIGHT),
+                resetOdometry(Position.BLUE_STARTING_LINE_RIGHT),
                 new InstantCommand(
                         () -> m_robotContainer.driveAngularVelocity.driveToPoseEnabled(true)),
 
                 // Drive to center line and extend/run intake
                 Commands.deadline(
-                        driveToWaypoint(Position.NEUTRAL_RIGHT_1),
+                        driveToWaypoint(Position.BLUE_NEUTRAL_RIGHT_1),
                         m_linearIntakeSubsystem.extend(),
                         m_intakeRollerSubsystem.intake(),
                         m_indexerSubsystem.run()),
 
                 // Drive to center of field
-                driveToWaypoint(Position.NEUTRAL_RIGHT_2),
+                driveToWaypoint(Position.BLUE_NEUTRAL_RIGHT_2),
 
                 // Drive back to trench
                 Commands.deadline(
-                        driveToWaypoint(Position.NEUTRAL_RIGHT_3),
+                        driveToWaypoint(Position.BLUE_NEUTRAL_RIGHT_3),
                         m_linearIntakeSubsystem.midpoint().andThen(
                                 Commands.parallel(
                                         m_intakeRollerSubsystem.stop(),
                                         m_indexerSubsystem.stop()))),
 
                 // Get in shooting position
-                driveToWaypoint(Position.ALLIANCE_RIGHT_1),
+                driveToWaypoint(Position.BLUE_ALLIANCE_RIGHT_1),
 
                 Commands.parallel(
                         m_shooterSubsystem.aimAndShootIgnoreCheck(m_swerveSubsystem::getDistanceToTarget),
