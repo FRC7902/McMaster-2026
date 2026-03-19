@@ -123,8 +123,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return Commands.parallel(
                 m_hoodSubsystem.setDefaultAngle(),
                 m_flywheelSubsystem.setDefaultRPM(),
-                new ConditionalCommand(m_feederSubsystem.feed(), m_feederSubsystem.stop(), this::isShooterReady)
-                        .repeatedly());
+                Commands.waitSeconds(1).andThen(m_feederSubsystem.feed()));
     }
 
     public Command shootWith(Angle angle, AngularVelocity RPM) {
