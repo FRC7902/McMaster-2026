@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class AutoConstants {
-    public static final double DEFAULT_WAYPOINT_TOLERANCE = 0.1;
+    public static final double DEFAULT_WAYPOINT_TOLERANCE = 0.25;
 
     public enum Position {
         STARTING_LINE_RIGHT,

@@ -775,20 +775,21 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (Constants.TELEMETRY && !DriverStation.isFMSAttached()) {
-            SmartDashboard.putNumber("autoAimHeading", getAutoAimHeading().getDegrees());
-            SmartDashboard.putNumber("currentHeading", getHeading().getDegrees());
-            SmartDashboard.putBoolean("isAutoAimReady", isAutoAimOnTarget());
-            SmartDashboard.putNumber("distToWaypoint (m)",
+            SmartDashboard.putNumber("swerve/autoAimHeading", getAutoAimHeading().getDegrees());
+            SmartDashboard.putNumber("swerve/currentHeading", getHeading().getDegrees());
+            SmartDashboard.putBoolean("swerve/isAutoAimReady", isAutoAimOnTarget());
+            SmartDashboard.putNumber("swerve/distToWaypoint (m)",
                     m_driveToWaypoint.minus(getPose()).getTranslation().getNorm());
-            SmartDashboard.putNumber("rotToWaypoint (deg)",
+            SmartDashboard.putNumber("swerve/rotToWaypoint (deg)",
                     m_driveToWaypoint.getRotation().minus(getPose().getRotation()).getDegrees());
+            SmartDashboard.putBoolean("swerve/isAtWaypoint", isAtWaypoint());
         }
     }
 
     @Override
     public void simulationPeriodic() {
-        SmartDashboard.putBoolean("isAutoAimReady", isAutoAimOnTarget());
-        SmartDashboard.putString("currentZone", getCurrentZone().toString());
-        SmartDashboard.putString("currentWaypoint", getDriveToWaypoint().toString());
+        SmartDashboard.putBoolean("swerve/isAutoAimReady", isAutoAimOnTarget());
+        SmartDashboard.putString("swerve/currentZone", getCurrentZone().toString());
+        SmartDashboard.putString("swerve/currentWaypoint", getDriveToWaypoint().toString());
     }
 }
