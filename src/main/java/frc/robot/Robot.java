@@ -41,6 +41,8 @@ public class Robot extends TimedRobot {
         // Zero gyro (shooter must face away from driver, towards opponent wall)
         m_robotContainer.zeroGyroWithAlliance();
 
+        CommandScheduler.getInstance().schedule(m_robotContainer.stopAllSubsystems());
+
         // Check the linear intake position and set the encoder position accordingly
         m_robotContainer.calibrateLinearIntakePosition();
 
