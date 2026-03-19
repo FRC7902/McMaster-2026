@@ -219,7 +219,8 @@ public final class Constants {
                                 Map.entry(Meter.of(11), HoodConstants.SOFT_LIMIT_MAX),
                                 Map.entry(Meter.of(12), HoodConstants.SOFT_LIMIT_MAX),
                                 Map.entry(Meter.of(13), HoodConstants.SOFT_LIMIT_MAX),
-                                Map.entry(Meter.of(14), HoodConstants.SOFT_LIMIT_MAX))));
+                                Map.entry(Meter.of(14),
+                                        HoodConstants.SOFT_LIMIT_MAX))));
 
         public static final Map<ShooterZone, AngularVelocity> SHOOTER_MIN_DISTANCE_TO_FLYWHEEL_RPM = Map
                 .ofEntries(
@@ -271,7 +272,7 @@ public final class Constants {
             public static final Current STATOR_CURRENT_LIMIT_AMPS = Amps.of(80);
             public static final Current SUPPLY_CURRENT_LIMIT_AMPS = Amps.of(40);
 
-            public static final double PID_kP = 0.003; // TODO
+            public static final double PID_kP = 0.01; // SysID gave 3386E-05
             public static final double PID_kI = 0.0; // TODO
             public static final double PID_kD = 0.0; // TODO
 
@@ -279,8 +280,9 @@ public final class Constants {
             public static final double SIM_PID_kI = 0.0; // TODO
             public static final double SIM_PID_kD = 0.0; // TODO
 
-            public static final SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(0.28389, 0.090208,
-                    0.0091861);
+            public static final SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(0.26596,
+                    0.089323,
+                    0.0095055);
             public static final SimpleMotorFeedforward SIM_FEEDFORWARD = new SimpleMotorFeedforward(0.24,
                     0.09, 0.007553); // TODO
 
@@ -289,13 +291,15 @@ public final class Constants {
 
             public static final AngularVelocity MAX_VELOCITY_RPM = RPM.of(8000);
             public static final AngularVelocity SIM_MAX_VELOCITY_RPM = RPM.of(8000);
-            public static final AngularAcceleration MAX_ACCELERATION_RPS2 = RotationsPerSecondPerSecond.of(173);
+            public static final AngularAcceleration MAX_ACCELERATION_RPS2 = RotationsPerSecondPerSecond
+                    .of(173);
 
             public static final AngularVelocity SOFT_LIMIT_RPM = RPM.of(8000); // TODO
 
             public static final AngularVelocity DEFAULT_VELOCITY = RPM.of(3500);;
 
-            public static final AngularVelocity RPM_TARGET_ERROR = RPM.of(100); // ~2% of ALLIANCE_SHOOTING_VELOCITY
+            public static final AngularVelocity RPM_TARGET_ERROR = RPM.of(100); // ~2% of
+                                                                                // ALLIANCE_SHOOTING_VELOCITY
             public static final Time AT_RPM_DEBOUNCE_TIME = Seconds.of(0.5); // TODO
 
             public static final Translation3d RELATIVE_POSITION = new Translation3d(Inches.of(-5.087),
@@ -314,16 +318,16 @@ public final class Constants {
             public static final Current STATOR_CURRENT_LIMIT = Amps.of(40);
             public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(40);
 
-            public static final double PID_kP = 30.865; // TODO
-            public static final double PID_kI = 0.0; // TODO
-            public static final double PID_kD = 3.0998; // TODO
+            public static final double PID_kP = 35.673;
+            public static final double PID_kI = 0.0;
+            public static final double PID_kD = 5.251;
 
             public static final double SIM_PID_kP = 16; // TODO
             public static final double SIM_PID_kI = 7; // TODO
             public static final double SIM_PID_kD = 1; // TODO
 
-            public static final SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(0.2417, 11.922,
-                    0.37754); // TODO
+            public static final SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(0.25399, 11.909,
+                    0.44218);
             public static final SimpleMotorFeedforward SIM_FEEDFORWARD = new SimpleMotorFeedforward(0, 0,
                     0); // TODO
 
@@ -331,7 +335,8 @@ public final class Constants {
             public static final Time OPEN_LOOP_RAMP_RATE_SEC = Seconds.of(0.25); // TODO
 
             public static final AngularVelocity MAX_VELOCITY_RPM = RPM.of(6000); // TODO
-            public static final AngularAcceleration MAX_ACCELERATION_RPS2 = RotationsPerSecondPerSecond.of(0.314); // TODO
+            public static final AngularAcceleration MAX_ACCELERATION_RPS2 = RotationsPerSecondPerSecond
+                    .of(0.314); // TODO
 
             public static final Angle SOFT_LIMIT_MIN = Degrees.of(0);
             public static final Angle SOFT_LIMIT_MAX = Degrees.of(42);
@@ -384,7 +389,8 @@ public final class Constants {
             public static final double SIM_PID_kI = 0.0; // TODO
             public static final double SIM_PID_kD = 0.0; // TODO
 
-            public static final SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(0.1517, 0.96378,
+            public static final SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(0.1517,
+                    0.96378,
                     0.017578);
             public static final SimpleMotorFeedforward SIM_FEEDFORWARD = new SimpleMotorFeedforward(2.25,
                     0.0, 0.0); // TODO
@@ -394,7 +400,8 @@ public final class Constants {
 
             public static final AngularVelocity MAX_VELOCITY_RPM = RPM.of(725);
             public static final AngularVelocity SIM_MAX_VELOCITY_RPM = RPM.of(725);
-            public static final AngularAcceleration MAX_ACCELERATION_RPS2 = RotationsPerSecondPerSecond.of(99999); // TODO
+            public static final AngularAcceleration MAX_ACCELERATION_RPS2 = RotationsPerSecondPerSecond
+                    .of(99999); // TODO
 
             public static final AngularVelocity SOFT_LIMIT_RPM = RPM.of(4338);
         }
