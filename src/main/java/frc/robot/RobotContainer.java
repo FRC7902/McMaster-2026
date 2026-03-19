@@ -13,7 +13,6 @@ import java.util.function.DoubleSupplier;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -24,18 +23,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.ClimbConstants.ElevatorConstants;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SimSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.SwerveSubsystem.Zone;
+import frc.robot.subsystems.climb.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.subsystems.intake.LinearIntakeSubsystem;
 import frc.robot.subsystems.intake.LinearIntakeSubsystem.LinearIntakePosition;
@@ -49,6 +51,8 @@ public class RobotContainer {
     final CommandPS5Controller m_driverController = new CommandPS5Controller(Constants.DRIVER_CONTROLLER_PORT);
 
     // private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
+    public final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
+
     public final HopperSubsystem m_hopperSubsystem = new HopperSubsystem();
     public final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem();
     public final IntakeRollerSubsystem m_intakeRollerSubsystem = new IntakeRollerSubsystem();
@@ -389,13 +393,25 @@ public class RobotContainer {
                                         m_intakeRollerSubsystem.stop())));
 
         // Auto-align to left side tower for climbing
-        // m_driverController.povLeft().whileTrue(
-        // Commands.sequence(
-        // new InstantCommand(
-        // () -> m_swerveSubsystem.setSelectedClimbPose(true)),
-        // Commands.runEnd(
-        // () -> driveAngularVelocity.driveToPoseEnabled(true),
-        // () -> driveAngularVelocity.driveToPoseEnabled(false))));
+        m_driverController.povLeft().whileTrue(
+                Commands.sequence(
+                        new InstantCommand(
+                                () -> m_swerveSubsystem.setSelectedClimbPose(true)),
+                        Commands.runEnd(
+                                () -> driveAngularVelocity.driveToPoseEnabled(true),
+                                () -> driveAngularVelocity.driveToPoseEnabled(false))));
+
+        // Auto-align to right side tower for climbing
+        m_driverController.povRight().whileTrue(
+                Commands.sequence(
+                        new InstantCommand(
+                                () -> m_swerveSubsystem.setSelectedClimbPose(false)),
+                        Commands.runEnd(
+                                () -> driveAngularVelocity.driveToPoseEnabled(true),
+                                () -> driveAngularVelocity.driveToPoseEnabled(false))));
+
+        m_driverController.povUp().onTrue(m_elevatorSubsystem.setHeight(ElevatorConstants.SOFT_UPPER_LIMIT));
+        m_driverController.povDown().onTrue(m_elevatorSubsystem.setHeight(ElevatorConstants.SOFT_LOWER_LIMIT));
 
         // Auto-traverse the trench through left side
         // m_driverController.L3().whileTrue(
