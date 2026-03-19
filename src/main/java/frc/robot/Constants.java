@@ -98,28 +98,6 @@ public final class Constants {
 		public static final double DRIVE_TO_POSE_ROTATION_kD = 0;
 		public static final double DRIVE_TO_POSE_ROTATION_MAX_VELOCITY_RAD = Units.degreesToRadians(360);
 		public static final double DRIVE_TO_POSE_ROTATION_MAX_ACCELERATION_RAD = Units.degreesToRadians(180);
-
-		public static final InterpolatingDoubleTreeMap distanceToScaleTranslation = InterpolatingDoubleTreeMap
-				.ofEntries(
-						Map.entry(Meters.of(1).in(Meters), 0.3),
-						Map.entry(Meters.of(2).in(Meters), 0.8),
-						Map.entry(Meters.of(4).in(Meters), 1.0));
-	}
-
-	class logDistanceRelation implements Interpolatable<logDistanceRelation> {
-		static final double base = 4.30326;
-		double distanceFromTarget;
-
-		public logDistanceRelation(double distanceFromTarget) {
-			this.distanceFromTarget = distanceFromTarget;
-		}
-
-		@Override
-		public logDistanceRelation interpolate(logDistanceRelation endValue, double t) {
-			double logFunction = Math.log(t * (base - 1) + 1)/Math.log(base);
-			return new logDistanceRelation(this.distanceFromTarget - (endValue.distanceFromTarget - this.distanceFromTarget) * logFunction);
-		}
-
 	}
 
 	public static final class OperatorConstants {

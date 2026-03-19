@@ -44,6 +44,7 @@ import limelight.networktables.LimelightSettings.ImuMode;
 import swervelib.SwerveInputStream;
 import swervelib.simulation.ironmaple.simulation.SimulatedArena;
 import swervelib.simulation.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnField;
+import frc.robot.utils.DistanceToScaleVelocity;
 import frc.robot.utils.LimelightWrapper;
 
 public class RobotContainer {
@@ -147,8 +148,7 @@ public class RobotContainer {
         SwerveInputStream driveAutoAim = driveAngularVelocity.copy()
                         .withControllerHeadingAxis(autoAimHeadingX(), autoAimHeadingY())
                         .headingWhile(true)
-                        .scaleTranslation(m_swerveSubsystem
-                                        .getAutoAimScaleTranslation(m_swerveSubsystem.getDistanceToTarget()).get());
+                        .scaleTranslation(DistanceToScaleVelocity.distanceToScaleVelocity(m_swerveSubsystem.getDistanceToTarget()));
 
         public RobotContainer() {
                 if (Robot.isSimulation()) {
