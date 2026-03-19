@@ -17,8 +17,8 @@ public class PoseUtils {
     public static Pose2d flipAlliance(Pose2d pose) {
         return new Pose2d(
             FieldConstants.FIELD_LENGTH - pose.getX(),
-            pose.getY(),
-            new Rotation2d(Degrees.of(180)).minus(pose.getRotation())
+            FieldConstants.FIELD_WIDTH - pose.getY(),
+            (new Rotation2d(Degrees.of(180)).minus(pose.getRotation())).times(-1)
         );
     }
 }
