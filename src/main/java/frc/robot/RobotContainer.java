@@ -308,10 +308,10 @@ public class RobotContainer {
         m_driverController.R2()
                 .and(isIdleTrigger)
                 .and(new Trigger(m_swerveSubsystem::isAutoAimOnTarget))
-                .whileTrue(
+                .onTrue(
                         Commands.sequence(
                                 Commands.waitSeconds(0.01),
-                                new InstantCommand(m_swerveSubsystem::lock)));
+                                new InstantCommand(m_swerveSubsystem::lock, m_swerveSubsystem)));
         m_driverController.R2()
                 .and(isControllingDriveTrigger)
                 .onTrue(m_shooterSubsystem.aimAndShoot(
@@ -388,6 +388,11 @@ public class RobotContainer {
                                 m_shooterSubsystem.storeFuel()),
                         m_shooterSubsystem.stopShooting(),
                         m_driverController.L2()::getAsBoolean));
+        m_driverController.R1()
+                .whileTrue(
+                        Commands.sequence(
+                                Commands.waitSeconds(0.01),
+                                new InstantCommand(m_swerveSubsystem::lock, m_swerveSubsystem)));
         m_driverController.R1()
                 .and(m_driverController.R2().negate())
                 .onTrue(m_indexerSubsystem.run())
