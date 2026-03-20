@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
@@ -185,9 +186,49 @@ public class LinearIntakeSubsystem extends SubsystemBase {
         return setPosition(LinearIntakeConstants.RETRACTED_POSITION);
     }
 
+    /**
+     * Shuffle the intake back and forth to help dislodge any stuck game pieces. (If
+     * hopper is full)
+     * 
+     * @return
+     */
+    private Command shuffleFar() {
+        return Commands.sequence(
+                Commands.deadline(
+                        Commands.waitSeconds(2),
+                        Commands.sequence(
+                                setPosition(LinearIntakeConstants.SHUFFLE_FURTHEST_POSITION).withTimeout(0.25),
+                                setPosition(LinearIntakeConstants.EXTENDED_POSITION).withTimeout(0.25))
+                                .repeatedly()),
+                setPosition(LinearIntakeConstants.SHUFFLE_FAR_POSITION).withTimeout(0.5),
+                setPosition(LinearIntakeConstants.SHUFFLE_CLOSE_POSITION).withTimeout(0.5),
+                setPosition(LinearIntakeConstants.SHUFFLE_FAR_POSITION).withTimeout(0.5),
+                setPosition(LinearIntakeConstants.SHUFFLE_CLOSE_POSITION).withTimeout(0.5),
+                Commands.sequence(
+                        midpoint().withTimeout(0.5),
+                        retract().withTimeout(0.5))
+                        .repeatedly());
+    }
+
     public Command shuffle() {
         return Commands.sequence(
-                Commands.waitSeconds(2),
+                Commands.deadline(
+                        Commands.waitSeconds(2),
+                        new ConditionalCommand(
+                                // Full hopper (which intake cannot close past midpoint)
+                                Commands.sequence(
+                                        setPosition(LinearIntakeConstants.SHUFFLE_FURTHEST_POSITION).withTimeout(0.25),
+                                        setPosition(LinearIntakeConstants.EXTENDED_POSITION).withTimeout(0.25))
+                                        .repeatedly(),
+                                // Not full hopper (which intake can close past midpoint, so shuffle closer to
+                                // midpoint)
+                                Commands.sequence(
+                                        setPosition(LinearIntakeConstants.SHUFFLE_FAR_POSITION).withTimeout(0.25),
+                                        setPosition(LinearIntakeConstants.MIDPOINT_POSITION).withTimeout(0.25))
+                                        .repeatedly(),
+                                () -> getPosition().gt(
+                                        LinearIntakeConstants.MIDPOINT_POSITION
+                                                .plus(LinearIntakeConstants.POSITION_TARGET_ERROR)))),
                 setPosition(LinearIntakeConstants.SHUFFLE_FAR_POSITION).withTimeout(0.5),
                 setPosition(LinearIntakeConstants.SHUFFLE_CLOSE_POSITION).withTimeout(0.5),
                 setPosition(LinearIntakeConstants.SHUFFLE_FAR_POSITION).withTimeout(0.5),

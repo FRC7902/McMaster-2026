@@ -166,10 +166,12 @@ public final class Constants {
 
             public static final Distance EXTENDED_POSITION = SOFT_LIMIT_MAX;
             public static final Distance MIDPOINT_POSITION = Meters.of(0.15);
-            public static final Distance SHUFFLE_CLOSE_POSITION = Meters.of(0.025);
-            public static final Distance SHUFFLE_FAR_POSITION = Meters.of(0.20);
-            public static final Distance POSITION_TARGET_ERROR = Inches.of(0.5); // TODO
+            public static final Distance POSITION_TARGET_ERROR = Inches.of(0.5);
             public static final Distance RETRACTED_POSITION = SOFT_LIMIT_MIN;
+
+            public static final Distance SHUFFLE_CLOSE_POSITION = Meters.of(0.025);
+            public static final Distance SHUFFLE_FAR_POSITION = MIDPOINT_POSITION.plus(Meters.of(0.05));
+            public static final Distance SHUFFLE_FURTHEST_POSITION = EXTENDED_POSITION.minus(Meters.of(0.05));
 
             public static final Translation3d RELATIVE_POSITION = new Translation3d(Inches.of(0),
                     Inches.of(10.682),
