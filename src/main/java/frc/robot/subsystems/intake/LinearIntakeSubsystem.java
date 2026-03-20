@@ -139,7 +139,10 @@ public class LinearIntakeSubsystem extends SubsystemBase {
     public Command setPosition(Distance position) {
         return m_linearIntake.runTo(position, LinearIntakeConstants.POSITION_TARGET_ERROR)
                 .withTimeout(Seconds.of(3)).finallyDo(
-                        () -> m_smartMotorController.setDutyCycle(0));
+                        () -> {
+                            m_smartMotorController.stopClosedLoopController();
+                            m_smartMotorController.setDutyCycle(0);
+                        });
     }
 
     public Distance getPosition() {
