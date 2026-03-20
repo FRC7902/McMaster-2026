@@ -74,6 +74,30 @@ public class Choreo {
 
     public Command rightNeutralAuto() {
         return Commands.sequence(
-                m_autoFactory.resetOdometry(""));
+                m_autoFactory.resetOdometry("RightAuto1"),
+                m_autoFactory.trajectoryCmd("RightAuto1"),
+                m_autoFactory.trajectoryCmd("RightAuto2").deadlineFor(
+                        m_intakeRollerSubsystem.intake(),
+                        m_indexerSubsystem.run()),
+                m_autoFactory.trajectoryCmd("RightAuto3").deadlineFor(
+                        m_intakeRollerSubsystem.stop(),
+                        m_indexerSubsystem.stop()),
+                m_swerveSubsystem.stop(),
+                Commands.waitSeconds(5).deadlineFor(
+                        m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+                        m_shooterSubsystem.aimAndShootIgnoreCheck(
+                                () -> m_swerveSubsystem.getDistanceToTarget(true)),
+                        m_indexerSubsystem.run(),
+                        m_intakeRollerSubsystem.intake()),
+                m_autoFactory.trajectoryCmd("RightAuto4"),
+                m_autoFactory.trajectoryCmd("RightAuto5").deadlineFor(
+                        m_intakeRollerSubsystem.stop(),
+                        m_indexerSubsystem.stop()),
+                Commands.parallel(
+                        m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+                        m_shooterSubsystem.aimAndShootIgnoreCheck(
+                                () -> m_swerveSubsystem.getDistanceToTarget(true)),
+                        m_indexerSubsystem.run(),
+                        m_intakeRollerSubsystem.intake()));
     }
 }
