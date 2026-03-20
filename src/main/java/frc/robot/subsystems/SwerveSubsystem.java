@@ -33,8 +33,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -781,7 +779,10 @@ public class SwerveSubsystem extends SubsystemBase {
         double matchTime = DriverStation.getMatchTime();
         Color color = Color.BOTH;
         String colorCode = "#FFFFFF";
-        if (!DriverStationSim.getAutonomous()) {
+        if (DriverStation.isAutonomous()) {
+            timeLeft = matchTime;
+        }
+        else {
             if (matchTime <= MatchConstants.MATCH_TIME_TELEOP_START
                     && matchTime > MatchConstants.MATCH_TIME_TRANSITION_END) {
                 color = colorInactive == Color.RED ? Color.BLUE : Color.RED;
