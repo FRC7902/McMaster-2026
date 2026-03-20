@@ -67,7 +67,7 @@ public class Autos {
                         m_intakeRollerSubsystem.intake(),
                         m_indexerSubsystem.run()
                 ))
-                .bind("StopIntake", m_linearIntakeSubsystem.retract().andThen(
+                .bind("StopIntake", m_linearIntakeSubsystem.midpoint().andThen(
                         m_intakeRollerSubsystem.stop(),
                         m_indexerSubsystem.stop()
                 ))
