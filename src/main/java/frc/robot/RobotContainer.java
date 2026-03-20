@@ -309,7 +309,8 @@ public class RobotContainer {
                 .onTrue(
                         Commands.sequence(
                                 Commands.waitSeconds(0.01),
-                                new InstantCommand(m_swerveSubsystem::lock, m_swerveSubsystem)));
+                                new InstantCommand(m_swerveSubsystem::lock,
+                                        m_swerveSubsystem)));
         m_driverController.R2()
                 .and(isControllingDriveTrigger)
                 .onTrue(m_shooterSubsystem.aimAndShoot(
@@ -390,7 +391,8 @@ public class RobotContainer {
                 .whileTrue(
                         Commands.sequence(
                                 Commands.waitSeconds(0.01),
-                                new InstantCommand(m_swerveSubsystem::lock, m_swerveSubsystem)));
+                                new InstantCommand(m_swerveSubsystem::lock,
+                                        m_swerveSubsystem)));
         m_driverController.R1()
                 .and(m_driverController.R2().negate())
                 .onTrue(m_indexerSubsystem.run())
@@ -462,34 +464,34 @@ public class RobotContainer {
         m_driverController.povDown().onTrue(m_elevatorSubsystem.setHeight(ElevatorConstants.SOFT_LOWER_LIMIT));
 
         // Auto-traverse the trench through left side
-        // m_driverController.L3().whileTrue(
-        // new ConditionalCommand(
-        // selectRedLeftTrenchTraversal,
-        // selectBlueLeftTrenchTraversal,
-        // m_swerveSubsystem::isRedAlliance));
+        m_driverController.L3().whileTrue(
+                new ConditionalCommand(
+                        selectRedLeftTrenchTraversal,
+                        selectBlueLeftTrenchTraversal,
+                        m_swerveSubsystem::isRedAlliance));
         // Stop shooting to prevent hood from hitting trench
-        // m_driverController.L3().onTrue(
-        // new ConditionalCommand(
-        // Commands.sequence( // If intake is active, continue storing fuel
-        // m_shooterSubsystem.stopShooting(),
-        // m_shooterSubsystem.storeFuel()),
-        // m_shooterSubsystem.stopShooting(),
-        // m_driverController.L2()::getAsBoolean));
+        m_driverController.L3().onTrue(
+                new ConditionalCommand(
+                        Commands.sequence( // If intake is active, continue storing fuel
+                                m_shooterSubsystem.stopShooting(),
+                                m_shooterSubsystem.storeFuel()),
+                        m_shooterSubsystem.stopShooting(),
+                        m_driverController.L2()::getAsBoolean));
 
         // Auto-traverse the trench through right side
-        // m_driverController.R3().whileTrue(
-        // new ConditionalCommand(
-        // selectRedRightTrenchTraversal,
-        // selectBlueRightTrenchTraversal,
-        // m_swerveSubsystem::isRedAlliance));
+        m_driverController.R3().whileTrue(
+                new ConditionalCommand(
+                        selectRedRightTrenchTraversal,
+                        selectBlueRightTrenchTraversal,
+                        m_swerveSubsystem::isRedAlliance));
         // Stop shooting to prevent hood from hitting trench
-        // m_driverController.R3().onTrue(
-        // new ConditionalCommand(
-        // Commands.sequence( // If intake is active, continue storing fuel
-        // m_shooterSubsystem.stopShooting(),
-        // m_shooterSubsystem.storeFuel()),
-        // m_shooterSubsystem.stopShooting(),
-        // m_driverController.L2()::getAsBoolean));
+        m_driverController.R3().onTrue(
+                new ConditionalCommand(
+                        Commands.sequence( // If intake is active, continue storing fuel
+                                m_shooterSubsystem.stopShooting(),
+                                m_shooterSubsystem.storeFuel()),
+                        m_shooterSubsystem.stopShooting(),
+                        m_driverController.L2()::getAsBoolean));
     }
 
     public void calibrateLinearIntakePosition() {
