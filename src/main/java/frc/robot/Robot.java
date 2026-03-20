@@ -41,6 +41,8 @@ public class Robot extends TimedRobot {
         // Zero gyro (shooter must face away from driver, towards opponent wall)
         m_robotContainer.zeroGyroWithAlliance();
 
+        CommandScheduler.getInstance().schedule(m_robotContainer.stopAllSubsystems());
+
         // Check the linear intake position and set the encoder position accordingly
         m_robotContainer.calibrateLinearIntakePosition();
 
@@ -48,7 +50,9 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().schedule(m_robotContainer.m_shooterSubsystem.startFlywheelDefaultRPM());
 
         // Extend the intake to lower the hopper enough to go underneath the trench
-        CommandScheduler.getInstance().schedule(m_robotContainer.m_linearIntakeSubsystem.midpoint());
+        // NOTE: Extend intake fully in auto, due to bug not allowing you to move it
+        // during auto without interrupting the auto
+        CommandScheduler.getInstance().schedule(m_robotContainer.m_linearIntakeSubsystem.extend());
     }
 
     @Override
