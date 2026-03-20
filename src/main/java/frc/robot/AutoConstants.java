@@ -15,7 +15,10 @@ public class AutoConstants {
         NEUTRAL_RIGHT_1,
         NEUTRAL_RIGHT_2,
         NEUTRAL_RIGHT_3,
-        ALLIANCE_RIGHT_1
+        ALLIANCE_RIGHT_1,
+        RIGHT_OUTPOST_ALIGN,
+        RIGHT_BACK_UP_OUTPOST,
+        RIGHT_CLIMB_ALIGN
     }
 
     // Create map position enum to Pose2D
@@ -29,5 +32,8 @@ public class AutoConstants {
             Position.NEUTRAL_RIGHT_3,
             new Pose2d(5.869497776031494, 0.632, new Rotation2d(Degrees.of(90))),
             Position.ALLIANCE_RIGHT_1,
-            new Pose2d(4.015, 0.632, new Rotation2d(Degrees.of(80.25))));
+            new Pose2d(4.015, 0.632, new Rotation2d(Degrees.of(80.25))),
+            Position.RIGHT_OUTPOST_ALIGN, new Pose2d(0.5992408394813538,0.6748262047767639, new Rotation2d(Degrees.of(0))),
+            Position.RIGHT_BACK_UP_OUTPOST, new Pose2d(1.6838583946228027,0.6748262047767639, new Rotation2d(Degrees.of(90))),
+            Position.RIGHT_CLIMB_ALIGN, new Pose2d(1.6838583946228027, 3.3163061141967773, new Rotation2d(Degrees.of(180))));
 }
