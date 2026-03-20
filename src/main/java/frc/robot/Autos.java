@@ -1,26 +1,19 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoConstants.Position;
-import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.subsystems.intake.LinearIntakeSubsystem;
-import swervelib.SwerveInputStream;
 
 public class Autos {
 
@@ -32,10 +25,6 @@ public class Autos {
     private final ShooterSubsystem m_shooterSubsystem;
     private final SwerveSubsystem m_swerveSubsystem;
 
-    private final SwerveInputStream m_driveAngularVelocity;
-    private final Command m_driveFieldOrientedAngularVelocity;
-    private final Command m_driveFieldOrientedAutoAim;
-
     public Autos(RobotContainer robotContainer) {
         m_robotContainer = robotContainer;
 
@@ -44,11 +33,6 @@ public class Autos {
         m_linearIntakeSubsystem = robotContainer.m_linearIntakeSubsystem;
         m_shooterSubsystem = robotContainer.m_shooterSubsystem;
         m_swerveSubsystem = robotContainer.m_swerveSubsystem;
-
-        m_driveAngularVelocity = m_robotContainer.driveAngularVelocity;
-
-        m_driveFieldOrientedAngularVelocity = m_robotContainer.driveFieldOrientedAngularVelocity;
-        m_driveFieldOrientedAutoAim = m_robotContainer.driveFieldOrientedAutoAim;
 
         if (Constants.TELEMETRY && !DriverStation.isFMSAttached()) {
             StructArrayPublisher<Pose2d> waypointPositions = NetworkTableInstance.getDefault()
@@ -66,8 +50,6 @@ public class Autos {
             waypointPositions.accept(
                     java.util.Arrays.stream(waypointSelection)
                             .map(AutoConstants.positionToPose::get)
-                            // .map((position) ->
-                            // PoseUtils.flipX(AutoConstants.positionToPose.get(position)))
                             .toArray(Pose2d[]::new));
         }
     }
@@ -85,96 +67,12 @@ public class Autos {
         return driveToWaypoint(AutoConstants.positionToPose.get(position));
     }
 
-    private Command driveToWaypoint(Position position, double maxTranslationalVelocity) {
-        return Commands.sequence(
-                new InstantCommand(() -> updateLimits(maxTranslationalVelocity)),
-                driveToWaypoint(position));
-    }
-
-    private Command driveToWaypoint(Position position, double maxTranslationalVelocity,
-            double maxTranslationalAcceleration) {
-        return Commands.sequence(
-                new InstantCommand(() -> updateLimits(maxTranslationalVelocity,
-                        maxTranslationalAcceleration)),
-                driveToWaypoint(position));
-    }
-
-    private Command driveToWaypoint(Position position, AngularVelocity maxRotationalVelocity) {
-        return Commands.sequence(
-                new InstantCommand(() -> updateLimits(maxRotationalVelocity)),
-                driveToWaypoint(position));
-    }
-
-    private Command driveToWaypoint(Position position, AngularVelocity maxRotationalVelocity,
-            AngularVelocity maxRotationalAcceleration) {
-        return Commands.sequence(
-                new InstantCommand(
-                        () -> updateLimits(maxRotationalVelocity, maxRotationalAcceleration)),
-                driveToWaypoint(position));
-    }
-
-    // private Command driveToWaypoint(Position position, double
-    // maxTranslationalVelocity,
-    // AngularVelocity maxRotationalVelocity) {
-    // return Commands.sequence(
-    // new InstantCommand(() -> updateLimits(maxTranslationalVelocity,
-    // maxRotationalVelocity)),
-    // driveToWaypoint(position));
-    // }
-
     private Command resetOdometry(Pose2d waypoint) {
         return Commands.runOnce(() -> m_swerveSubsystem.resetOdometry(waypoint));
     }
 
     private Command resetOdometry(Position position) {
         return resetOdometry(AutoConstants.positionToPose.get(position));
-    }
-
-    private void updateLimits(double maxTranslationalVelocity, double maxTranslationalAcceleration,
-            double maxRotationalVelocity, double maxRotationalAcceleration) {
-        m_driveAngularVelocity.driveToPose(m_swerveSubsystem::getDriveToWaypoint,
-                new ProfiledPIDController(
-                        SwerveConstants.DRIVE_TO_POSE_TRANSLATION_kP,
-                        SwerveConstants.DRIVE_TO_POSE_TRANSLATION_kI,
-                        SwerveConstants.DRIVE_TO_POSE_TRANSLATION_kD,
-                        new TrapezoidProfile.Constraints(
-                                maxTranslationalVelocity,
-                                maxTranslationalAcceleration)),
-                new ProfiledPIDController(
-                        SwerveConstants.DRIVE_TO_POSE_ROTATION_kP,
-                        SwerveConstants.DRIVE_TO_POSE_ROTATION_kI,
-                        SwerveConstants.DRIVE_TO_POSE_ROTATION_kD,
-                        new TrapezoidProfile.Constraints(
-                                maxRotationalVelocity,
-                                maxRotationalAcceleration)));
-    }
-
-    private void updateLimits(double maxTranslationalVelocity, double maxTranslationalAcceleration) {
-        updateLimits(maxTranslationalVelocity, maxTranslationalAcceleration,
-                SwerveConstants.DRIVE_TO_POSE_ROTATION_MAX_VELOCITY_RAD,
-                SwerveConstants.DRIVE_TO_POSE_ROTATION_MAX_ACCELERATION_RAD);
-    }
-
-    private void updateLimits(double maxTranslationalVelocity) {
-        updateLimits(maxTranslationalVelocity, SwerveConstants.DRIVE_TO_POSE_TRANSLATION_MAX_ACCELERATION);
-    }
-
-    private void updateLimits(AngularVelocity maxRotationalVelocity, AngularVelocity maxRotationalAcceleration) {
-        updateLimits(SwerveConstants.DRIVE_TO_POSE_TRANSLATION_MAX_VELOCITY,
-                SwerveConstants.DRIVE_TO_POSE_TRANSLATION_MAX_ACCELERATION,
-                maxRotationalVelocity.in(RadiansPerSecond),
-                maxRotationalAcceleration.in(RadiansPerSecond));
-    }
-
-    private void updateLimits(AngularVelocity maxRotationalVelocity) {
-        updateLimits(maxRotationalVelocity,
-                RadiansPerSecond.of(SwerveConstants.DRIVE_TO_POSE_ROTATION_MAX_ACCELERATION_RAD));
-    }
-
-    private void updateLimits(double maxTranslationalVelocity, AngularVelocity maxRotationalVelocity) {
-        updateLimits(maxTranslationalVelocity, SwerveConstants.DRIVE_TO_POSE_TRANSLATION_MAX_ACCELERATION,
-                maxRotationalVelocity.in(RadiansPerSecond),
-                SwerveConstants.DRIVE_TO_POSE_ROTATION_MAX_ACCELERATION_RAD);
     }
 
     public Command rightNeutralAuto() {
@@ -188,74 +86,34 @@ public class Autos {
                 new InstantCommand(
                         () -> m_robotContainer.driveAngularVelocity.driveToPoseEnabled(true)),
 
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "2")),
-
                 driveToWaypoint(Position.NEUTRAL_RIGHT_1),
 
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "3")),
-
-                m_linearIntakeSubsystem.extend(),
-
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "4")),
-
-                m_intakeRollerSubsystem.intake(),
-
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "5")),
-
-                // Drive to center line and extend/run intake
-                // Commands.deadline(
-                // driveToWaypoint(Position.NEUTRAL_RIGHT_1),
+                // Commands.parallel(
                 // m_linearIntakeSubsystem.extend(),
-                // m_intakeRollerSubsystem.intake(),
-                // m_indexerSubsystem.run()),
+                m_intakeRollerSubsystem.intake(),
+                // ),
 
                 // Drive to center of field
                 driveToWaypoint(Position.NEUTRAL_RIGHT_2),
 
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "6")),
-
-                driveToWaypoint(Position.NEUTRAL_RIGHT_3),
-
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "7")),
-
-                m_linearIntakeSubsystem.midpoint(),
-
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "8")),
-
-                m_intakeRollerSubsystem.stop(),
-
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "9")),
+                driveToWaypoint(Position.NEUTRAL_RIGHT_3)
+                        .deadlineFor(
+                                // m_linearIntakeSubsystem.midpoint().andThen(
+                                // Commands.parallel(
+                                m_intakeRollerSubsystem.stop(),
+                                m_indexerSubsystem.stop()
+                        // ))
+                        ),
 
                 m_indexerSubsystem.stop(),
-
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "10")),
-
-                // Drive back to trench
-                // Commands.deadline(
-                // driveToWaypoint(Position.NEUTRAL_RIGHT_3),
-                // m_linearIntakeSubsystem.midpoint().andThen(
-                // Commands.parallel(
-                // m_intakeRollerSubsystem.stop(),
-                // m_indexerSubsystem.stop()))),
 
                 // Get in shooting position
                 driveToWaypoint(Position.ALLIANCE_RIGHT_1),
 
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "11")),
-
                 // Shoot for 5s
                 Commands.deadline(
                         Commands.waitSeconds(4),
+                        driveToWaypoint(Position.ALLIANCE_RIGHT_1),
                         m_shooterSubsystem.aimAndShootIgnoreCheck(
                                 m_swerveSubsystem::getDistanceToTarget),
                         m_indexerSubsystem.run(),
@@ -263,79 +121,37 @@ public class Autos {
                 // m_linearIntakeSubsystem.shuffle()
                 ),
 
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "12")),
-
-                driveToWaypoint(Position.NEUTRAL_RIGHT_4),
-
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "13")),
-
-                m_linearIntakeSubsystem.extend(),
-
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "14")),
-
-                m_intakeRollerSubsystem.intake(),
-
                 // Drive past trench (close to bump) and extend/run intake
-                // Commands.deadline(
-                // driveToWaypoint(Position.NEUTRAL_RIGHT_4),
-                // m_shooterSubsystem.stopShooting(),
-                // m_indexerSubsystem.stop(),
-                // m_intakeRollerSubsystem.stop(),
-                // m_linearIntakeSubsystem.midpoint()),
+                driveToWaypoint(Position.NEUTRAL_RIGHT_4).deadlineFor(
+                        m_shooterSubsystem.stopShooting(),
+                        m_indexerSubsystem.stop(),
+                        m_intakeRollerSubsystem.stop()
+                // m_linearIntakeSubsystem.midpoint()
+                ),
 
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "15")),
-
-                driveToWaypoint(Position.NEUTRAL_RIGHT_5),
-                // Commands.deadline(
-                // driveToWaypoint(Position.NEUTRAL_RIGHT_5),
-                // m_linearIntakeSubsystem.extend(),
-                // m_intakeRollerSubsystem.intake(),
-                // m_indexerSubsystem.run()),
-
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "16")),
+                driveToWaypoint(Position.NEUTRAL_RIGHT_5).deadlineFor(
+                        // m_linearIntakeSubsystem.extend(),
+                        m_intakeRollerSubsystem.intake(),
+                        m_indexerSubsystem.run()),
 
                 driveToWaypoint(Position.NEUTRAL_RIGHT_6),
 
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "17")),
-
-                driveToWaypoint(Position.NEUTRAL_RIGHT_4),
-
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "18")),
-                // Commands.deadline(
-                // driveToWaypoint(Position.NEUTRAL_RIGHT_4),
-                // m_linearIntakeSubsystem.midpoint().andThen(
-                // Commands.parallel(
-                // m_intakeRollerSubsystem.stop(),
-                // m_indexerSubsystem.stop()))),
-
-                m_linearIntakeSubsystem.midpoint(),
-
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "19")),
-                m_intakeRollerSubsystem.stop(),
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "20")),
-                m_indexerSubsystem.stop(),
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "21")),
+                driveToWaypoint(Position.NEUTRAL_RIGHT_4).deadlineFor(
+                        // m_linearIntakeSubsystem.midpoint().andThen(Commands.parallel(
+                        m_intakeRollerSubsystem.stop(),
+                        m_indexerSubsystem.stop()
+                // ))
+                ),
 
                 driveToWaypoint(Position.ALLIANCE_RIGHT_1),
 
-                // new InstantCommand(() -> SmartDashboard.putString("rightNeutralAutoState",
-                // "22")),
                 Commands.parallel(
+                        driveToWaypoint(Position.ALLIANCE_RIGHT_1),
                         m_shooterSubsystem.aimAndShootIgnoreCheck(
                                 m_swerveSubsystem::getDistanceToTarget),
                         m_indexerSubsystem.run(),
                         m_intakeRollerSubsystem.intake()
-                // m_linearIntakeSubsystem.shuffle())
+                // m_linearIntakeSubsystem.shuffle()
                 ));
 
     }
