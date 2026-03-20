@@ -188,12 +188,11 @@ public class LinearIntakeSubsystem extends SubsystemBase {
                 setPosition(LinearIntakeConstants.SHUFFLE_FAR_POSITION).withTimeout(0.5),
                 setPosition(LinearIntakeConstants.SHUFFLE_CLOSE_POSITION).withTimeout(0.5),
                 setPosition(LinearIntakeConstants.SHUFFLE_FAR_POSITION).withTimeout(0.5),
-                setPosition(LinearIntakeConstants.SHUFFLE_CLOSE_POSITION).withTimeout(0.5)
-        // Commands.sequence(
-        // midpoint().withTimeout(0.5),
-        // retract().withTimeout(0.5))
-        // .repeatedly()
-        );
+                setPosition(LinearIntakeConstants.SHUFFLE_CLOSE_POSITION).withTimeout(0.5),
+                Commands.sequence(
+                        midpoint().withTimeout(0.5),
+                        retract().withTimeout(0.5))
+                        .repeatedly());
     }
 
     public Command set(double dutycycle) {
