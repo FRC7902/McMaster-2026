@@ -292,22 +292,24 @@ public class RobotContainer {
                         new InstantCommand(() -> driveAngularVelocity.scaleTranslation(
                                 1.0).scaleRotation(1.0)));
 
+        Trigger autoAimOnTarget = new Trigger(m_swerveSubsystem::isAutoAimOnTarget);
+
         // Auto-aim (swerve heading with calculated hood angle) and shoot
         m_driverController.R2()
                 .and(isIdleTrigger.negate())
-                .and(new Trigger(m_swerveSubsystem::isAutoAimOnTarget))
+                .and(autoAimOnTarget)
                 .whileTrue(driveFieldOrientedAutoAim);
         m_driverController.R2()
                 .and(isIdleTrigger)
-                .and(new Trigger(m_swerveSubsystem::isAutoAimOnTarget).negate())
+                .and(autoAimOnTarget.negate())
                 .whileTrue(driveFieldOrientedAutoAim);
         m_driverController.R2()
                 .and(isIdleTrigger.negate())
-                .and(new Trigger(m_swerveSubsystem::isAutoAimOnTarget).negate())
+                .and(autoAimOnTarget.negate())
                 .whileTrue(driveFieldOrientedAutoAim);
         m_driverController.R2()
                 .and(isIdleTrigger)
-                .and(new Trigger(m_swerveSubsystem::isAutoAimOnTarget))
+                .and(autoAimOnTarget)
                 .onTrue(
                         Commands.sequence(
                                 Commands.waitSeconds(0.01),
