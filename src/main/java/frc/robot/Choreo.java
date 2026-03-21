@@ -198,8 +198,8 @@ public class Choreo {
     public Command leftNeutralAutoThenDepot() {
         return Commands.sequence(
                 leftNeutralAutoFirstSweep(),
-                m_autoFactory.trajectoryCmd("LeftAuto2a"),
-                m_autoFactory.trajectoryCmd("LeftAuto3a").deadlineFor(
+                m_autoFactory.trajectoryCmd("LeftAuto2c"),
+                m_autoFactory.trajectoryCmd("LeftAuto3c").deadlineFor(
                         m_shooterSubsystem.aimAndShootIgnoreCheck(
                                 () -> m_swerveSubsystem.getDistanceToTarget(true))));
     }
