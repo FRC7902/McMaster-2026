@@ -173,6 +173,15 @@ public class Choreo {
                 m_elevatorSubsystem.setHeight(ElevatorConstants.SOFT_LOWER_LIMIT));
     }
 
+    public Command leftNeutralAutoThenDepot() {
+        return Commands.sequence(
+                leftNeutralAutoFirstSweep(),
+                m_autoFactory.trajectoryCmd("LeftAuto2a"),
+                m_autoFactory.trajectoryCmd("LeftAuto3a").deadlineFor(
+                        m_shooterSubsystem.aimAndShootIgnoreCheck(
+                                () -> m_swerveSubsystem.getDistanceToTarget(true))));
+    }
+
     public Command leftNeutralAutoThenClimb() {
         return Commands.sequence(
                 leftNeutralAutoFirstSweep(),
