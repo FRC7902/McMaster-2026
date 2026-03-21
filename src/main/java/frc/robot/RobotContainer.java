@@ -462,8 +462,10 @@ public class RobotContainer {
                                 () -> driveAngularVelocity.driveToPoseEnabled(false))));
 
         m_driverController.povUp().onTrue(m_elevatorSubsystem.setHeight(ElevatorConstants.SOFT_UPPER_LIMIT));
-        m_driverController.povUp().onTrue(m_linearIntakeSubsystem.retract());
-        m_driverController.povDown().onTrue(m_elevatorSubsystem.setHeight(ElevatorConstants.SOFT_LOWER_LIMIT));
+        m_driverController.povDown().onTrue(
+                Commands.sequence(
+                        m_elevatorSubsystem.setHeight(ElevatorConstants.SOFT_LOWER_LIMIT),
+                        m_elevatorSubsystem.closeClimberHooks()));
 
         // Auto-traverse the trench through left side
         m_driverController.L3().whileTrue(

@@ -470,6 +470,9 @@ public final class Constants {
             public static final Time HOMING_DEBOUNCE_TIME = Seconds.of(0.4); // TODO
             public static final Voltage HOMING_RUN_VOLTS = Volts.of(-2); // TODO
             public static final AngularVelocity HOMING_VELOCITY_THRESHOLD = DegreesPerSecond.of(2); // TODO
+
+            public static final Voltage CLOSE_HOOKS_VOLTAGE = Volts.of(12);
+            public static final Current CLOSE_HOOKS_CURRENT_LIMIT = Amps.of(5);
         }
 
         public static final class TongueConstants {

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.climb;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Second;
@@ -13,6 +14,7 @@ import static edu.wpi.first.units.Units.Volts;
 import java.util.Optional;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimbConstants.ElevatorConstants;
@@ -180,10 +183,6 @@ public class ElevatorSubsystem extends SubsystemBase {
                 });
     }
 
-    public Command elevCmd(double dutycycle) {
-        return m_climb.set(dutycycle);
-    }
-
     public Command setHeight(Distance height) {
         return m_climb.setHeight(height);
     }
@@ -206,6 +205,46 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public Command stop() {
         return setHeight(m_climb.getHeight());
+    }
+
+    private void setStatorCurrentLimits(Current current) {
+        CurrentLimitsConfigs leaderLimits = new CurrentLimitsConfigs();
+        m_leaderMotor.getConfigurator().refresh(leaderLimits); // read current settings
+        leaderLimits.StatorCurrentLimit = current.in(Amps);
+        leaderLimits.StatorCurrentLimitEnable = true;
+        m_leaderMotor.getConfigurator().apply(leaderLimits);
+
+        CurrentLimitsConfigs followerLimits = new CurrentLimitsConfigs();
+        m_followerMotor.getConfigurator().refresh(followerLimits); // read current settings
+        followerLimits.StatorCurrentLimit = current.in(Amps);
+        followerLimits.StatorCurrentLimitEnable = true;
+        m_followerMotor.getConfigurator().apply(followerLimits);
+    }
+
+    // Note: Lower hooks to bottom position before running this command
+    public Command closeClimberHooks() {
+        return Commands.sequence(
+                this.runOnce(() -> {
+                    m_leaderSmartMotorController.stopClosedLoopController();
+                    m_leaderSmartMotorController.setDutyCycle(0);
+
+                    m_followerSmartMotorController.stopClosedLoopController();
+                    m_followerSmartMotorController.setDutyCycle(0);
+
+                    setStatorCurrentLimits(ElevatorConstants.CLOSE_HOOKS_CURRENT_LIMIT);
+                }),
+                Commands.waitSeconds(0.5),
+                new InstantCommand(() -> {
+                    m_leaderSmartMotorController.setVoltage(ElevatorConstants.CLOSE_HOOKS_VOLTAGE);
+                    m_followerSmartMotorController.setVoltage(ElevatorConstants.CLOSE_HOOKS_VOLTAGE);
+                }),
+                Commands.waitSeconds(1),
+                new InstantCommand(() -> {
+                    m_leaderSmartMotorController.setVoltage(Volts.of(0));
+                    m_followerSmartMotorController.setVoltage(Volts.of(0));
+                }),
+                this.runOnce(
+                        () -> setStatorCurrentLimits(ElevatorConstants.STATOR_CURRENT_LIMIT)));
     }
 
     @Override
