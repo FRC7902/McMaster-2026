@@ -237,10 +237,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (Constants.TELEMETRY && !DriverStation.isFMSAttached()) {
+        // if (Constants.TELEMETRY && !DriverStation.isFMSAttached()) {
             SmartDashboard.putBoolean("isHoodReady", m_hoodSubsystem.isAtTargetAngle());
             SmartDashboard.putBoolean("isFlywheelReady", m_flywheelSubsystem.isAtTargetRPM());
-        }
+        // }
     }
 
     @Override

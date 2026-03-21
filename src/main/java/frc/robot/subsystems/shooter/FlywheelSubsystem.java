@@ -217,12 +217,13 @@ public class FlywheelSubsystem extends SubsystemBase {
 
         if (Constants.TELEMETRY && !DriverStation.isFMSAttached()) {
             SmartDashboard.putNumber("FlywheelMech/linearVelocity (fps)", getLinearVelocity().in(FeetPerSecond));
-            SmartDashboard.putNumber("FlywheelMech/velocity (RPM)", getAngularVelocity().in(RPM));
-            SmartDashboard.putNumber("FlywheelMech/setpoint (RPM)",
-                    getSetpointVelocity().map(
-                            setpoint -> setpoint.in(RPM) * FlywheelConstants.GEARBOX.getOutputToInputConversionFactor())
-                            .orElse(Double.NaN));
         }
+
+        SmartDashboard.putNumber("FlywheelMech/velocity (RPM)", getAngularVelocity().in(RPM));
+        SmartDashboard.putNumber("FlywheelMech/setpoint (RPM)",
+                getSetpointVelocity().map(
+                        setpoint -> setpoint.in(RPM) * FlywheelConstants.GEARBOX.getOutputToInputConversionFactor())
+                        .orElse(Double.NaN));
     }
 
     @Override
