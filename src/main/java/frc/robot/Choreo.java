@@ -131,6 +131,24 @@ public class Choreo {
                 m_swerveSubsystem.stop());
     }
 
+    public Command leftNeutralAutoSweepOnce() {
+        return Commands.sequence(
+                leftNeutralAutoFirstSweep(),
+                Commands.parallel(
+                        m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+                        m_shooterSubsystem.aimAndShootIgnoreCheck(
+                                () -> m_swerveSubsystem.getDistanceToTarget(true))));
+    }
+
+    public Command rightNeutralAutoSweepOnce() {
+        return Commands.sequence(
+                rightNeutralAutoFirstSweep(),
+                Commands.parallel(
+                        m_swerveSubsystem.driveFieldOriented(stationaryAutoAim),
+                        m_shooterSubsystem.aimAndShootIgnoreCheck(
+                                () -> m_swerveSubsystem.getDistanceToTarget(true))));
+    }
+
     public Command rightNeutralAutoSweepTwice() {
         return Commands.sequence(
                 rightNeutralAutoFirstSweep(),
